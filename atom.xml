@@ -77,6 +77,30 @@
   </entry>
   
   <entry>
+    <title>19. Remove Nth Node From End of List</title>
+    <link href="http://salmons.info/2016/03/13/lc19/"/>
+    <id>http://salmons.info/2016/03/13/lc19/</id>
+    <published>2016-03-13T15:15:02.000Z</published>
+    <updated>2019-01-29T06:43:12.199Z</updated>
+    
+    <content type="html"><![CDATA[<p>Given a linked list, remove the n-th node from the end of list and return its head.<br><a id="more"></a></p><p>Example:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Given linked list: 1-&gt;2-&gt;3-&gt;4-&gt;5, and n = 2.</span><br><span class="line"></span><br><span class="line">After removing the second node from the end, the linked list becomes 1-&gt;2-&gt;3-&gt;5.</span><br></pre></td></tr></table></figure><p><strong>Note:</strong></p><p>Given n will always be valid.</p><p><strong>Follow up:</strong></p><p>Could you do this in one pass?</p><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>删除链表的倒数第 n 个节点，并且返回链表的头结点。</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>首先 p1 和 p2 都指向 head，然后 p2 向前走 n 步，这样 p1 和 p2 之间就间隔 n 个节点，最后 p1 和 p2 同时向前移动，直至 p2 走到链表末尾。</p><h4 id="C代码："><a href="#C代码：" class="headerlink" title="C代码："></a>C代码：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">struct ListNode* removeNthFromEnd(struct ListNode* head, int n) &#123;</span><br><span class="line">    </span><br><span class="line">    if (!head) &#123;</span><br><span class="line">        return NULL;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    struct ListNode *p = head;</span><br><span class="line">    struct ListNode *q = head;</span><br><span class="line"></span><br><span class="line">    int i = 0;</span><br><span class="line">    for(i = 0; i &lt; n; i++) &#123;</span><br><span class="line">        q = q-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (q == NULL) &#123;</span><br><span class="line">        return head-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    while(q-&gt;next != NULL)&#123;</span><br><span class="line">        p = p-&gt;next;</span><br><span class="line">        q = q-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    q = p-&gt;next;</span><br><span class="line">    p-&gt;next = p-&gt;next-&gt;next;</span><br><span class="line">    free(q);</span><br><span class="line">    return head;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>时间复杂度：O(n)</p><p>空间复杂度：O(1)</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Given a linked list, remove the n-th node from the end of list and return its head.&lt;br&gt;
+    
+    </summary>
+    
+      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
+    
+    
+      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
+    
+      <category term="LinkedList" scheme="http://salmons.info/tags/LinkedList/"/>
+    
+  </entry>
+  
+  <entry>
     <title>160. Intersection of Two Linked Lists</title>
     <link href="http://salmons.info/2016/03/12/lc160/"/>
     <id>http://salmons.info/2016/03/12/lc160/</id>
@@ -444,30 +468,6 @@
     <summary type="html">
     
       &lt;p&gt;Given an array of 2n integers, your task is to group these integers&lt;br&gt;
-    
-    </summary>
-    
-      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
-    
-    
-      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
-    
-      <category term="Array&amp;String" scheme="http://salmons.info/tags/Array-String/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>344. Reverse String</title>
-    <link href="http://salmons.info/2016/02/25/lc344/"/>
-    <id>http://salmons.info/2016/02/25/lc344/</id>
-    <published>2016-02-25T13:34:22.000Z</published>
-    <updated>2018-12-21T05:10:50.476Z</updated>
-    
-    <content type="html"><![CDATA[<p>Write a function that takes a string as input and returns the string reversed.<br><a id="more"></a></p><p>Example 1:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: &quot;hello&quot;</span><br><span class="line">Output: &quot;olleh&quot;</span><br></pre></td></tr></table></figure><p>Example 2:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: &quot;A man, a plan, a canal: Panama&quot;</span><br><span class="line">Output: &quot;amanaP :lanac a ,nalp a ,nam A&quot;</span><br></pre></td></tr></table></figure><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>反转字符串</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><ul><li>头尾同时遍历交换字符</li><li>递归</li><li>python slice</li></ul><h4 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a>Python代码：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def reverseString1(self, s):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type s: str</span><br><span class="line">        :rtype: str</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        if s is None or len(s) == 0:</span><br><span class="line">            return &quot;&quot;</span><br><span class="line">        return s[::-1]</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def reverseString2(self, s):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type s: str</span><br><span class="line">        :rtype: str</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        if s is None or len(s) == 0:</span><br><span class="line">            return &quot;&quot;</span><br><span class="line">        if len(s) &lt; 1:</span><br><span class="line">            return s</span><br><span class="line">        return s[-1] + self.reverseString(s[:-1])</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def reverseString3(self, s):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type s: str</span><br><span class="line">        :rtype: str</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        if s is None or len(s) == 0:</span><br><span class="line">            return &quot;&quot;</span><br><span class="line">            </span><br><span class="line">        i, j = 0, len(s) - 1</span><br><span class="line">        r = list(s)</span><br><span class="line">        while i &lt; j:</span><br><span class="line">            temp = r[i]</span><br><span class="line">            r[i], r[j] = r[j], temp</span><br><span class="line">        return &quot;&quot;.join(r)</span><br></pre></td></tr></table></figure><p>时间复杂度：O(n)</p><p>空间复杂度：O(1)</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Write a function that takes a string as input and returns the string reversed.&lt;br&gt;
     
     </summary>
     
