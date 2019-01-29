@@ -1,0 +1,437 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn,en,default">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Salmons&#39;s Pool">
+    <title>209. Minimum Size Subarray Sum - Salmons&#39;s Pool</title>
+    <meta name="author" content="Salmons">
+    
+    
+        <link rel="icon" href="http://salmons.info/assets/images/favicon.ico">
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Salmons","sameAs":[],"image":"favicon.ico"},"articleBody":"Given an array of n positive integers and a positive integer s, findthe minimal length of a contiguous subarray of which the sum ≥ s. If there isn’t one, return 0 instead.\nExample:\n123Input: s = 7, nums = [2,3,1,2,4,3]Output: 2Explanation: the subarray [4,3] has the minimal length under the problem constraint.\n题意：找出数组中最小长度的连续数组，这个连续数组总和&gt;=s, 返回数组长度，不存在的话就返回0\n思路：o(n)使用左右下标制作滑动窗口（子数组）o(nlogn)做一个sums数组，sums[i] 是nums[0]到nums[i]的和，然后使用二分查找\nPython代码：O(n)123456789101112131415161718class Solution:    def minSubArrayLen(self, s, nums):        &quot;&quot;&quot;        :type s: int        :type nums: List[int]        :rtype: int        &quot;&quot;&quot;        left, right, total, length, res = 0, 0, 0, len(nums), len(nums) + 1        while right &lt; length:            while total &lt; s and right &lt; length:                total += nums[right]                right += 1            while total &gt;= s:                res = min(res, right - left)                total -= nums[left]                left += 1            return 0 if res == len(nums) + 1 else res\nO(nlogn)12345678910111213141516171819202122232425262728class Solution:    def minSubArrayLen(self, s, nums):        &quot;&quot;&quot;        :type s: int        :type nums: List[int]        :rtype: int        &quot;&quot;&quot;        size = len(nums)        left, right = 0, size        bestAns = 0        while left &lt;= right:            mid = (left + right) // 2            if self.solve(mid, s, nums):                bestAns = mid                right = mid - 1            else:                left = mid + 1        return bestAns    def solve(self, l, s, nums):        sums = 0        for x in range(len(nums)):            sums += nums[x]            if x &gt;= l:                sums -= nums[x - l]            if sums &gt;= s:                return True        return False","dateCreated":"2016-03-01T22:15:02+08:00","dateModified":"2018-12-25T11:33:03+08:00","datePublished":"2016-03-01T22:15:02+08:00","description":"Given an array of n positive integers and a positive integer s, find","headline":"209. Minimum Size Subarray Sum","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://salmons.info/2016/03/01/lc209/"},"publisher":{"@type":"Organization","name":"Salmons","sameAs":[],"image":"favicon.ico","logo":{"@type":"ImageObject","url":"favicon.ico"}},"url":"http://salmons.info/2016/03/01/lc209/","keywords":"LeetCode, Array&String"}</script>
+    <meta name="description" content="Given an array of n positive integers and a positive integer s, find">
+<meta name="keywords" content="LeetCode,Array&amp;String">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="209. Minimum Size Subarray Sum">
+<meta property="og:url" content="http://salmons.info/2016/03/01/lc209/index.html">
+<meta property="og:site_name" content="Salmons&#39;s Pool">
+<meta property="og:description" content="Given an array of n positive integers and a positive integer s, find">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-12-25T03:33:03.639Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="209. Minimum Size Subarray Sum">
+<meta name="twitter:description" content="Given an array of n positive integers and a positive integer s, find">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://salmons.info/assets/images/favicon.ico"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-du2xmrqdqrl2ollgeiw050kpl6l4nbyz7bumjuurjgsxyopifvukebxc9lqe.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Salmons&#39;s Pool</a>
+    </div>
+    
+        
+            <a class="header-right-icon " href="/">
+        
+        
+            <i class="fa fa-home fa-lg"></i>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/favicon.ico" alt="作者的图片">
+                </a>
+                <h4 class="sidebar-profile-name">Salmons</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>life begins at the end of your comfort zone</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/ " title="首页">
+                    
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-archives" title="归档">
+                    
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-categories" title="分类">
+                    
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-tags" title="标签">
+                    
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="#about" title="关于">
+                    
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://github.com/swifterfit" target="_blank" rel="noopener" title="GitHub">
+                    
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://www.instagram.com/swifterfit/" target="_blank" rel="noopener" title="Instagram">
+                    
+                        <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Instagram</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="mailto:swifterfit@gmail.com" target="_blank" rel="noopener" title="邮箱">
+                    
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/atom.xml" title="RSS">
+                    
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            209. Minimum Size Subarray Sum
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2016-03-01T22:15:02+08:00">
+	
+		    3月 01, 2016
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/LeetCode/">LeetCode</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>Given an array of n positive integers and a positive integer s, find<br><a id="more"></a><br>the minimal length of a contiguous subarray of which the sum ≥ s. If there isn’t one, return 0 instead.</p>
+<p>Example:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Input: s = 7, nums = [2,3,1,2,4,3]</span><br><span class="line">Output: 2</span><br><span class="line">Explanation: the subarray [4,3] has the minimal length under the problem constraint.</span><br></pre></td></tr></table></figure>
+<h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>找出数组中最小长度的连续数组，这个连续数组总和&gt;=s, 返回数组长度，不存在的话就返回0</p>
+<h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>o(n)使用左右下标制作滑动窗口（子数组）<br>o(nlogn)做一个sums数组，sums[i] 是nums[0]到nums[i]的和，然后使用二分查找</p>
+<h4 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a>Python代码：</h4><h5 id="O-n"><a href="#O-n" class="headerlink" title="O(n)"></a>O(n)</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def minSubArrayLen(self, s, nums):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type s: int</span><br><span class="line">        :type nums: List[int]</span><br><span class="line">        :rtype: int</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        left, right, total, length, res = 0, 0, 0, len(nums), len(nums) + 1</span><br><span class="line">        while right &lt; length:</span><br><span class="line">            while total &lt; s and right &lt; length:</span><br><span class="line">                total += nums[right]</span><br><span class="line">                right += 1</span><br><span class="line">            while total &gt;= s:</span><br><span class="line">                res = min(res, right - left)</span><br><span class="line">                total -= nums[left]</span><br><span class="line">                left += 1</span><br><span class="line">    </span><br><span class="line">        return 0 if res == len(nums) + 1 else res</span><br></pre></td></tr></table></figure>
+<h5 id="O-nlogn"><a href="#O-nlogn" class="headerlink" title="O(nlogn)"></a>O(nlogn)</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def minSubArrayLen(self, s, nums):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type s: int</span><br><span class="line">        :type nums: List[int]</span><br><span class="line">        :rtype: int</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        size = len(nums)</span><br><span class="line">        left, right = 0, size</span><br><span class="line">        bestAns = 0</span><br><span class="line">        while left &lt;= right:</span><br><span class="line">            mid = (left + right) // 2</span><br><span class="line">            if self.solve(mid, s, nums):</span><br><span class="line">                bestAns = mid</span><br><span class="line">                right = mid - 1</span><br><span class="line">            else:</span><br><span class="line">                left = mid + 1</span><br><span class="line">        return bestAns</span><br><span class="line"></span><br><span class="line">    def solve(self, l, s, nums):</span><br><span class="line">        sums = 0</span><br><span class="line">        for x in range(len(nums)):</span><br><span class="line">            sums += nums[x]</span><br><span class="line">            if x &gt;= l:</span><br><span class="line">                sums -= nums[x - l]</span><br><span class="line">            if sums &gt;= s:</span><br><span class="line">                return True</span><br><span class="line">        return False</span><br></pre></td></tr></table></figure>
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/Array-String/">Array&String</a> <a class="tag tag--primary tag--small t-link" href="/tags/LeetCode/">LeetCode</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/02/lc189/" data-tooltip="189. Rotate Array" aria-label="上一篇: 189. Rotate Array">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/02/29/lc485/" data-tooltip="485. Max Consecutive Ones" aria-label="下一篇: 485. Max Consecutive Ones">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2019 Salmons. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/02/lc189/" data-tooltip="189. Rotate Array" aria-label="上一篇: 189. Rotate Array">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/02/29/lc485/" data-tooltip="485. Max Consecutive Ones" aria-label="下一篇: 485. Max Consecutive Ones">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+    <i id="btn-close-shareoptions" class="fa fa-times"></i>
+    <ul class="share-options">
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/favicon.ico" alt="作者的图片">
+        
+            <h4 id="about-card-name">Salmons</h4>
+        
+            <div id="about-card-bio"><p>life begins at the end of your comfort zone</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br>
+                <p>Bodybuilder, SE</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br>
+                China,Beijing
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-vufjrm3fmbuttogo1hxuu0w9w0sesk5iyysjuguc2hdhufot9szxg8twijry.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+        <script>
+             var disqus_config = function () {
+                 this.page.url = 'http://salmons.info/2016/03/01/lc209/';
+                 
+                    this.page.identifier = '2016/03/01/lc209/';
+                 
+             };
+            (function() {
+                var d = document, s = d.createElement('script');
+                var disqus_shortname = 'Salmons';
+                s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+
+
+
+    </body>
+</html>

@@ -1,0 +1,452 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn,en,default">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Salmons&#39;s Pool">
+    <title>淘宝选择规格动画效果 - Salmons&#39;s Pool</title>
+    <meta name="author" content="Salmons">
+    
+    
+        <link rel="icon" href="http://salmons.info/assets/images/favicon.ico">
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Salmons","sameAs":[],"image":"favicon.ico"},"articleBody":"很不幸，收到了裁员的通知，我们互联网团队30多人都收到了，应该只留1-2人，每个岗位。为了让我们愉快的度过十一，领导是在过节回来后和我们说的，上面的指示是业务原因！！！补偿是有的，只是心理上还是有点接受不了，不多说了，也快两年了，感情是有的。最晚11月末离职。年前了，不知道工作好找么？\n简介\n2017.03.14更新\n\nDemo: https://github.com/swifterfit/TaobaoPopAnimation\n总用淘宝，看到淘宝选择规格的凹陷的动画，就想到应该和维度和3D有关系，手痒，查了一些CATransform3D的资料。废话不多说，说一下我分解动画的思路步骤和主要代码：\n先贴一下最终效果：\n\n动画原理先看底层凹陷的动画分解(称为rootView)\nrootView的透视效果，同时缩小并上移一定距离\n\n1234567891011121314- (CATransform3D)firstTransform &#123;        CATransform3D firstTransform = CATransform3DIdentity;    //透视效果，必须有下面的rotate结合，否则没有效果    firstTransform.m34 = 1.0/-1500;    //缩小的效果    firstTransform = CATransform3DScale(firstTransform, 0.95, 0.95, 1);    //绕x轴旋转    firstTransform = CATransform3DRotate(firstTransform, 15.0 * M_PI/180.0, 1, 0, 0);    //z轴位移    firstTransform = CATransform3DTranslate(firstTransform, 0, 0, -100);        return firstTransform;&#125;\n\n为了视觉效果，再次制造透视效果，并且缩小移动，整体3d缩小的感觉。\n\n12345678910111213- (CATransform3D)secondTransform &#123;        //恢复    CATransform3D secondTransform = CATransform3DIdentity;    //再来一次透视    secondTransform.m34 = [self firstTransform].m34;    //上移    secondTransform = CATransform3DTranslate(secondTransform, 0, self.rootView.frame.size.height * (-0.08), 0);    //再次缩小    secondTransform = CATransform3DScale(secondTransform, 0.85, 0.75, 1);        return secondTransform;&#125;\n再看底部上升视图(称为popView)\n上升比较容易，主要看动画的时机。我放在了。上面的第2步里面同时进行。\n\n看下接口1234567/** 传入凹陷的rootView和底部弹出的popView @param rootView 底层凹陷的View @param popView 底部弹出的View */- (void)startAnimationRootView:(UIView *)rootView andPopView:(UIView *)popView;\n只需要传入你需要做动画的两个view就好。 \n可以把代码中一些参数提出来开放。\n总结做这种3d视觉效果的动画，基本上理解CATransform3D这个结构体每个成员的意义就差不多了。再配合平时用的scale、translate、等就够用了。 \n知识量不多，但是挺有意思的，可以开发很多有创意的animation\nTips关于CATransform3D 可以参考:\niOS的三维透视投影\nCore Animation之CATransform3D:矩阵变换3D旋转\n","dateCreated":"2016-10-21T16:10:26+08:00","dateModified":"2018-12-17T13:59:44+08:00","datePublished":"2016-10-21T16:10:26+08:00","description":"很不幸，收到了裁员的通知，我们互联网团队30多人都收到了，应该只留1-2人，每个岗位。为了让我们愉快的度过十一，领导是在过节回来后和我们说的，","headline":"淘宝选择规格动画效果","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://salmons.info/2016/10/21/淘宝选择规格动画效果/"},"publisher":{"@type":"Organization","name":"Salmons","sameAs":[],"image":"favicon.ico","logo":{"@type":"ImageObject","url":"favicon.ico"}},"url":"http://salmons.info/2016/10/21/淘宝选择规格动画效果/"}</script>
+    <meta name="description" content="很不幸，收到了裁员的通知，我们互联网团队30多人都收到了，应该只留1-2人，每个岗位。为了让我们愉快的度过十一，领导是在过节回来后和我们说的，">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="淘宝选择规格动画效果">
+<meta property="og:url" content="http://salmons.info/2016/10/21/淘宝选择规格动画效果/index.html">
+<meta property="og:site_name" content="Salmons&#39;s Pool">
+<meta property="og:description" content="很不幸，收到了裁员的通知，我们互联网团队30多人都收到了，应该只留1-2人，每个岗位。为了让我们愉快的度过十一，领导是在过节回来后和我们说的，">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="http://oma38gsun.bkt.clouddn.com/TaobaoPopAnimation.gif">
+<meta property="og:updated_time" content="2018-12-17T05:59:44.328Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="淘宝选择规格动画效果">
+<meta name="twitter:description" content="很不幸，收到了裁员的通知，我们互联网团队30多人都收到了，应该只留1-2人，每个岗位。为了让我们愉快的度过十一，领导是在过节回来后和我们说的，">
+<meta name="twitter:image" content="http://oma38gsun.bkt.clouddn.com/TaobaoPopAnimation.gif">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://salmons.info/assets/images/favicon.ico"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-du2xmrqdqrl2ollgeiw050kpl6l4nbyz7bumjuurjgsxyopifvukebxc9lqe.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Salmons&#39;s Pool</a>
+    </div>
+    
+        
+            <a class="header-right-icon " href="/">
+        
+        
+            <i class="fa fa-home fa-lg"></i>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/favicon.ico" alt="作者的图片">
+                </a>
+                <h4 class="sidebar-profile-name">Salmons</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>life begins at the end of your comfort zone</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/ " title="首页">
+                    
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-archives" title="归档">
+                    
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-categories" title="分类">
+                    
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-tags" title="标签">
+                    
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="#about" title="关于">
+                    
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://github.com/swifterfit" target="_blank" rel="noopener" title="GitHub">
+                    
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://www.instagram.com/swifterfit/" target="_blank" rel="noopener" title="Instagram">
+                    
+                        <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Instagram</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="mailto:swifterfit@gmail.com" target="_blank" rel="noopener" title="邮箱">
+                    
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/atom.xml" title="RSS">
+                    
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            淘宝选择规格动画效果
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2016-10-21T16:10:26+08:00">
+	
+		    10月 21, 2016
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/iOS/">iOS</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>很不幸，收到了裁员的通知，我们互联网团队30多人都收到了，应该只留1-2人，每个岗位。为了让我们愉快的度过十一，领导是在过节回来后和我们说的，<br><a id="more"></a><br>上面的指示是业务原因！！！补偿是有的，只是心理上还是有点接受不了，不多说了，也快两年了，感情是有的。最晚11月末离职。年前了，不知道工作好找么？</p>
+<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><blockquote>
+<p>2017.03.14更新</p>
+</blockquote>
+<p>Demo: <a href="https://github.com/swifterfit/TaobaoPopAnimation" target="_blank" rel="noopener">https://github.com/swifterfit/TaobaoPopAnimation</a></p>
+<p>总用淘宝，看到淘宝选择规格的凹陷的动画，就想到应该和维度和3D有关系，手痒，查了一些CATransform3D的资料。废话不多说，说一下我分解动画的思路步骤和主要代码：</p>
+<p>先贴一下最终效果：</p>
+<p><img src="http://oma38gsun.bkt.clouddn.com/TaobaoPopAnimation.gif" alt=""></p>
+<h3 id="动画原理"><a href="#动画原理" class="headerlink" title="动画原理"></a>动画原理</h3><h5 id="先看底层凹陷的动画分解-称为rootView"><a href="#先看底层凹陷的动画分解-称为rootView" class="headerlink" title="先看底层凹陷的动画分解(称为rootView)"></a>先看底层凹陷的动画分解(称为rootView)</h5><ul>
+<li>rootView的透视效果，同时缩小并上移一定距离</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">- (CATransform3D)firstTransform &#123;</span><br><span class="line">    </span><br><span class="line">    CATransform3D firstTransform = CATransform3DIdentity;</span><br><span class="line">    //透视效果，必须有下面的rotate结合，否则没有效果</span><br><span class="line">    firstTransform.m34 = 1.0/-1500;</span><br><span class="line">    //缩小的效果</span><br><span class="line">    firstTransform = CATransform3DScale(firstTransform, 0.95, 0.95, 1);</span><br><span class="line">    //绕x轴旋转</span><br><span class="line">    firstTransform = CATransform3DRotate(firstTransform, 15.0 * M_PI/180.0, 1, 0, 0);</span><br><span class="line">    //z轴位移</span><br><span class="line">    firstTransform = CATransform3DTranslate(firstTransform, 0, 0, -100);</span><br><span class="line">    </span><br><span class="line">    return firstTransform;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>为了视觉效果，再次制造透视效果，并且缩小移动，整体3d缩小的感觉。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (CATransform3D)secondTransform &#123;</span><br><span class="line">    </span><br><span class="line">    //恢复</span><br><span class="line">    CATransform3D secondTransform = CATransform3DIdentity;</span><br><span class="line">    //再来一次透视</span><br><span class="line">    secondTransform.m34 = [self firstTransform].m34;</span><br><span class="line">    //上移</span><br><span class="line">    secondTransform = CATransform3DTranslate(secondTransform, 0, self.rootView.frame.size.height * (-0.08), 0);</span><br><span class="line">    //再次缩小</span><br><span class="line">    secondTransform = CATransform3DScale(secondTransform, 0.85, 0.75, 1);</span><br><span class="line">    </span><br><span class="line">    return secondTransform;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="再看底部上升视图-称为popView"><a href="#再看底部上升视图-称为popView" class="headerlink" title="再看底部上升视图(称为popView)"></a>再看底部上升视图(称为popView)</h5><ul>
+<li>上升比较容易，主要看动画的时机。我放在了。上面的第2步里面同时进行。</li>
+</ul>
+<h5 id="看下接口"><a href="#看下接口" class="headerlink" title="看下接口"></a>看下接口</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> 传入凹陷的rootView和底部弹出的popView</span><br><span class="line"></span><br><span class="line"> @param rootView 底层凹陷的View</span><br><span class="line"> @param popView 底部弹出的View</span><br><span class="line"> */</span><br><span class="line">- (void)startAnimationRootView:(UIView *)rootView andPopView:(UIView *)popView;</span><br></pre></td></tr></table></figure>
+<p>只需要传入你需要做动画的两个view就好。 </p>
+<p>可以把代码中一些参数提出来开放。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>做这种3d视觉效果的动画，基本上理解<code>CATransform3D</code>这个结构体每个成员的意义就差不多了。再配合平时用的scale、translate、等就够用了。 </p>
+<p>知识量不多，但是挺有意思的，可以开发很多有创意的animation</p>
+<h3 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h3><p>关于<code>CATransform3D</code> 可以参考:</p>
+<p><a href="http://geeklu.com/2012/07/ios-3d-perspective/" target="_blank" rel="noopener">iOS的三维透视投影</a></p>
+<p><a href="http://blog.csdn.net/yujianxiang666/article/details/45333741" target="_blank" rel="noopener">Core Animation之CATransform3D:矩阵变换3D旋转</a></p>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/15/支付宝首页下拉刷新诡异的实现/" data-tooltip="支付宝首页下拉刷新诡异的实现" aria-label="上一篇: 支付宝首页下拉刷新诡异的实现">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/12/lc160/" data-tooltip="160. Intersection of Two Linked Lists" aria-label="下一篇: 160. Intersection of Two Linked Lists">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2019 Salmons. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/15/支付宝首页下拉刷新诡异的实现/" data-tooltip="支付宝首页下拉刷新诡异的实现" aria-label="上一篇: 支付宝首页下拉刷新诡异的实现">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/12/lc160/" data-tooltip="160. Intersection of Two Linked Lists" aria-label="下一篇: 160. Intersection of Two Linked Lists">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+    <i id="btn-close-shareoptions" class="fa fa-times"></i>
+    <ul class="share-options">
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/favicon.ico" alt="作者的图片">
+        
+            <h4 id="about-card-name">Salmons</h4>
+        
+            <div id="about-card-bio"><p>life begins at the end of your comfort zone</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br>
+                <p>Bodybuilder, SE</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br>
+                China,Beijing
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-vufjrm3fmbuttogo1hxuu0w9w0sesk5iyysjuguc2hdhufot9szxg8twijry.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+        <script>
+             var disqus_config = function () {
+                 this.page.url = 'http://salmons.info/2016/10/21/淘宝选择规格动画效果/';
+                 
+                    this.page.identifier = '2016/10/21/淘宝选择规格动画效果/';
+                 
+             };
+            (function() {
+                var d = document, s = d.createElement('script');
+                var disqus_shortname = 'Salmons';
+                s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+
+
+
+    </body>
+</html>

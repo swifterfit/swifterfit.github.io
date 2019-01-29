@@ -1,0 +1,559 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn,en,default">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Salmons&#39;s Pool">
+    <title>layout和constraint的几个方法解析 - Salmons&#39;s Pool</title>
+    <meta name="author" content="Salmons">
+    
+    
+        <link rel="icon" href="http://salmons.info/assets/images/favicon.ico">
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Salmons","sameAs":[],"image":"favicon.ico"},"articleBody":"一直在忙，没时间更新博客了。仿佛又回到了2014年的时候，三点一线。项目布局用的Masonry，很少用xib，在用约束制作动画的时候遇到了一些问题。在这里写下我的见解！\n简介参考Apple文档\nApple API Reference \n关于视图的布局和绘图，实际上有三个阶段\nUpdate Constraints ——&gt; Layout Views ——&gt; Display View\n大概的意思就是：先加约束，然后根据约束来计算frame，最后根据frame画到屏幕上！\n理解了大致流程，再来看看每个步骤的一些内容。\n\n\n约束相关\nsetNeedsUpdateConstraints\nneedsUpdateConstraints\nupdateConstraintsIfNeeded\nupdateConstraints\n\n\n\n布局相关\nlayoutSubviews\nsetNeedsLayout\nlayoutIfNeeded\n\n\n\n重绘相关\nsetNeedsDisplay\nsetNeedsDisplayInRect:(CGRect)invalidRect\ndrawRect\n\n\n\n约束相关先解释一下几个方法的意思：\n\nsetNeedsUpdateConstraints: 标记需要更新约束了，调用这方法表示未来某时刻会更新约束，然后调用 updateConstraints。此方法不强制立即更新。 可以批量修改约束来做性能上得优化。\n\nneedsUpdateConstraints: 返回BOOL值，来决定是否调用updateConstraints。\n\nupdateConstraintsIfNeeded: 强制立即触发约束更新，自动更新布局。\n\nupdateConstraints: 这个基本就是自定义View的时候重写这个方法，里面写约束，别忘调用super哈。\n\n\n可以这样理解: \nsetNeedsUpdateConstraints ——&gt; updateConstraintsIfNeeded ——&gt; updateConstraintsIfNeeded(YES) ——&gt; updateConstraints\n写了个简单的Demo来说明一些事情。\nDemo地址: LayoutDemo\n以后的Demo都用Swift写，以后的Demo都用Swift写，以后的Demo都用Swift写，哈哈！！！\n1234567891011121314151617181920212223242526    //彩色View高度约束    @IBOutlet weak var heightConstraint: NSLayoutConstraint!            @IBAction func btnAction(_ sender: Any) &#123;                //这里写上这句话完全是为了在下次更新周期到来之前，确保布局的更改都是已经完成的， 避免一些不必要的麻烦！建议加上啊。        view.layoutIfNeeded()                if self.heightConstraint.constant == 100 &#123;            self.heightConstraint.constant = 400        &#125;else &#123;            self.heightConstraint.constant = 100        &#125;        UIView.animate(withDuration: 1.0) &#123;                        /**             使用layoutIfNeeded()，会有动画效果。             使用setNeedsLayout()，没有动画效果。             */            self.view.layoutIfNeeded()//            self.view.setNeedsLayout()        &#125;    &#125;\n先看下用layoutIfNeeded() ： 有动画效果是因为立即布局，此布局是同步发生的，所以在animation的block中可以捕捉到约束的更改。\n在看用setNeedsLayout()：看来也能立即更新，就是没有动画了。为啥不用layoutIfNeeded()也能立即更新了？\n首先动画是发生在自己的线程里，不是发生在更新周期的主线程，下一更新周期触发动画，动画期间，约束改变的进度被呈现在主线程上来刷新UI， 你可以这样理解，按钮时间完成的时候，系统没别的事情处理了，就发生了更新周期，这时候才更新约束。 block没有捕获到约束的变化，所以没动画！好好理解一下。 在block里面的setNeedsLayout()只是标记了约束的更新。\n把animation去掉的话，只用block里面的内容，再体验一下吧。\n布局相关\nlayoutSubviewsApple文档介绍：\n\nThe default implementation of this method does nothing on iOS 5.1 and earlier. Otherwise, the default implementation uses any constraints you have set to determine the size and position of any subviews.\n\n\n在iOS5.1及更早的版本中这个方法默认不执行。而在iOS5.1之后，此方法默认执行你在所有子视图中已经明确设置的所有尺寸和位置约束。\n\n\nSubclasses can override this method as needed to perform more precise layout of their subviews. You should override this method only if the autoresizing and constraint-based behaviors of the subviews do not offer the behavior you want. You can use your implementation to set the frame rectangles of your subviews directly\n\n\n必要时可以在子类中重写这个方法，以实现更加精细的子视图布局。只要子视图的自动尺寸调整和基于约束系统行为不能提供你想要的效果，你就应该重写这个方法，直接设置子视图的frame（来实现你想要的效果）。\n\n\nYou should not call this method directly. If you want to force a layout update, call the setNeedsLayout method instead to do so prior to the next drawing update. If you want to update the layout of your views immediately, call the layoutIfNeeded method.\n\n\n你不应该直接调用此方法，如果想强制更新布局，要调用 setNeedsLayout 方法，但该方法不会立即 重绘视图(drawing) 。如果想立即跟新 视图布局layout ，请调用 layoutIfNeeded方法。\n\n什么时候系统会执行layoutSubviewslayoutSubviews不是供用户来调用的，而是系统自动调用的，我们能做的就是重写该方法。那么什么时候系统会调用layoutSubviews方法呢？\n\n调用 addSubview方法时会执行该方法。\n设置并改变子视图的frame属性时会触发该方法。\n滑动UIScrollView及继承与UIScrollView的控件时会触发该方法。\n旋转屏幕时，会触发父视图的layoutSubviews方法。\n设置并改变视图的frame属性时会触发父视图的layoutSubviews方法。\n\n\nsetNeedsLayoutApple文档介绍：\n\nInvalidates the current layout of the receiver and triggers a layout update during the next update cycle.\n\n\n在当前布局周期发送setNeedsLayout消息是无效的，直到下一个布局周期才会触发布局更新。\n\n\nCall this method on your application’s main thread when you want to adjust the layout of a view’s subviews. This method makes a note of the request and returns immediately. Because this method does not force an immediate update, but instead waits for the next update cycle, you can use it to invalidate the layout of multiple views before any of those views are updated. This behavior allows you to consolidate all of your layout updates to one update cycle, which is usually better for performance.\n\n\n当你想要调整子视图的布局时，你可以在应用的主线程调用该方法。这个方法将记录布局请求，并立即返回。由于该方法不强制立即更新，而是等到下一个更新周期，所以你可以在当前的无效周期内添加多个多个视图的布局，等到下一个周期同一更新。这么做通常可以获得更好的性能。\n\n\nlayoutIfNeededApple文档介绍：\n\nLays out the subviews immediately.\n\n\n立即布局子视图。\n\n\nUse this method to force the layout of subviews before drawing. Using the view that receives the message as the root view, this method lays out the view subtree starting at the root.\n\n\n使用这个方法可以在系统绘制视图之前强制（重新）布局子视图。这个方法将从当前视图开始布局当前视图树之下的所有子视图。\n\nTips\n\nlayoutSubviews：默认没有做任何事情，需要子类进行重写，对subviews重新布局, 如果用frame布局，自定义View尽量在这里写Frame。\n\nsetNeedsLayout： 标记为需要重新布局，异步调用layoutIfNeeded刷新布局，不立即刷新，但layoutSubviews一定会被调用\n\nlayoutIfNeeded：如果有需要刷新的标记，立即调用layoutSubviews进行布局（如果没有标记，不会调用layoutSubviews）\n\n其实和约束相关里面的方法差不多意思，一个针对约束，一个针对Frame。\n重绘相关\ndrawRect:(CGRect)rect：重写此方法，执行重绘任务，不能直接调用\nsetNeedsDisplay：标记为需要重绘，异步调用drawRect，在下一个draw周期自动重绘，iphone device的刷新频率是60hz，也就是1/60秒后重绘 \nsetNeedsDisplayInRect:(CGRect)invalidRect：标记为需要局部重绘\n\ndrawRect在什么情况下会被调用？\n如果在UIView初始化时没有设置rect大小，将直接导致drawRect不被自动调用。drawRect调用是在ViewController-&gt;loadView, ViewController-&gt;viewDidLoad 两方法之后掉用的.所以不用担心在控制器中,这些View的drawRect就开始画了.这样可以在控制器中设置一些值给View(如果这些View draw的时候需要用到某些变量值).\n\n\n该方法在调用sizeToFit后被调用，所以可以先调用sizeToFit计算出size。然后系统自动调用drawRect:方法。\n通过设置contentMode属性值为UIViewContentModeRedraw。那么将在每次设置或更改frame的时候自动调用drawRect\n直接调用setNeedsDisplay，或者setNeedsDisplayInRect:触发drawRect:，但是有个前提条件是rect不能为0。\n\ndrawRect方法使用注意点：\n若使用UIView绘图，只能在drawRect：方法中获取相应的contextRef并绘图。如果在其他方法中获取将获取到一个invalidate的ref并且不能用于画图。drawRect：方法不能手动显示调用，必须通过调用setNeedsDisplay或者 setNeedsDisplayInRect:，让系统自动调该方法。\n若使用CALayer绘图，只能在drawInContext:中（类似于drawRect）绘制，或者在delegate中的相应方法绘制。同样也是调用setNeedDisplay等间接调用以上方法\n若要实时画图，不能使用gestureRecognizer，只能使用touchbegan等方法来调用setNeedsDisplay实时刷新屏幕\n\n最近想看下Masonry的源码，有时间再来一发儿。\n","dateCreated":"2015-12-08T13:37:09+08:00","dateModified":"2018-12-17T13:58:31+08:00","datePublished":"2015-12-08T13:37:09+08:00","description":"一直在忙，没时间更新博客了。仿佛又回到了2014年的时候，三点一线。项目布局用的Masonry，很少用","headline":"layout和constraint的几个方法解析","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://salmons.info/2015/12/08/layout和constraint的几个方法解析/"},"publisher":{"@type":"Organization","name":"Salmons","sameAs":[],"image":"favicon.ico","logo":{"@type":"ImageObject","url":"favicon.ico"}},"url":"http://salmons.info/2015/12/08/layout和constraint的几个方法解析/"}</script>
+    <meta name="description" content="一直在忙，没时间更新博客了。仿佛又回到了2014年的时候，三点一线。项目布局用的Masonry，很少用">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="layout和constraint的几个方法解析">
+<meta property="og:url" content="http://salmons.info/2015/12/08/layout和constraint的几个方法解析/index.html">
+<meta property="og:site_name" content="Salmons&#39;s Pool">
+<meta property="og:description" content="一直在忙，没时间更新博客了。仿佛又回到了2014年的时候，三点一线。项目布局用的Masonry，很少用">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-12-17T05:58:31.602Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="layout和constraint的几个方法解析">
+<meta name="twitter:description" content="一直在忙，没时间更新博客了。仿佛又回到了2014年的时候，三点一线。项目布局用的Masonry，很少用">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://salmons.info/assets/images/favicon.ico"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-du2xmrqdqrl2ollgeiw050kpl6l4nbyz7bumjuurjgsxyopifvukebxc9lqe.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Salmons&#39;s Pool</a>
+    </div>
+    
+        
+            <a class="header-right-icon " href="/">
+        
+        
+            <i class="fa fa-home fa-lg"></i>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/favicon.ico" alt="作者的图片">
+                </a>
+                <h4 class="sidebar-profile-name">Salmons</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>life begins at the end of your comfort zone</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/ " title="首页">
+                    
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-archives" title="归档">
+                    
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-categories" title="分类">
+                    
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-tags" title="标签">
+                    
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="#about" title="关于">
+                    
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://github.com/swifterfit" target="_blank" rel="noopener" title="GitHub">
+                    
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://www.instagram.com/swifterfit/" target="_blank" rel="noopener" title="Instagram">
+                    
+                        <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Instagram</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="mailto:swifterfit@gmail.com" target="_blank" rel="noopener" title="邮箱">
+                    
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/atom.xml" title="RSS">
+                    
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            layout和constraint的几个方法解析
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2015-12-08T13:37:09+08:00">
+	
+		    12月 08, 2015
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/iOS/">iOS</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>一直在忙，没时间更新博客了。仿佛又回到了2014年的时候，三点一线。<br>项目布局用的<a href="https://github.com/SnapKit/Masonry" target="_blank" rel="noopener"><code>Masonry</code></a>，很少用<br><a id="more"></a><br><code>xib</code>，在用约束制作动画的时候遇到了一些问题。<br>在这里写下我的见解！</p>
+<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>参考<code>Apple</code>文档</p>
+<p><a href="https://developer.apple.com/reference/uikit/uiview/1622482-layoutsubviews?language=objc" target="_blank" rel="noopener">Apple API Reference</a> </p>
+<p><a href="http://www.iosinsight.com/setneedslayout-vs-layoutifneeded-explained/" target="_blank" rel="noopener"></a><br>关于视图的布局和绘图，实际上有三个阶段</p>
+<p><code>Update Constraints</code> ——&gt; <code>Layout Views</code> ——&gt; <code>Display View</code></p>
+<p>大概的意思就是：先加约束，然后根据约束来计算frame，最后根据frame画到屏幕上！</p>
+<p>理解了大致流程，再来看看每个步骤的一些内容。</p>
+<hr>
+<ul>
+<li><a href="#约束相关"><strong>约束相关</strong></a></li>
+<li><code>setNeedsUpdateConstraints</code></li>
+<li><code>needsUpdateConstraints</code></li>
+<li><code>updateConstraintsIfNeeded</code></li>
+<li><code>updateConstraints</code></li>
+</ul>
+<hr>
+<ul>
+<li><a href="#布局相关"><strong>布局相关</strong></a></li>
+<li><a href="#layoutSubviews"><strong><code>layoutSubviews</code></strong></a></li>
+<li><a href="#setNeedsLayout"><strong><code>setNeedsLayout</code></strong></a></li>
+<li><a href="#layoutIfNeeded"><strong><code>layoutIfNeeded</code></strong></a></li>
+</ul>
+<hr>
+<ul>
+<li><a href="#重绘相关"><strong>重绘相关</strong></a></li>
+<li><code>setNeedsDisplay</code></li>
+<li><code>setNeedsDisplayInRect:(CGRect)invalidRect</code></li>
+<li><code>drawRect</code></li>
+</ul>
+<hr>
+<p><b id="约束相关"></b></p>
+<h3 id="约束相关"><a href="#约束相关" class="headerlink" title="约束相关"></a>约束相关</h3><p>先解释一下几个方法的意思：</p>
+<ul>
+<li><p><code>setNeedsUpdateConstraints</code>: 标记需要更新约束了，调用这方法表示未来某时刻会更新约束，然后调用 <code>updateConstraints</code>。此方法不强制立即更新。 可以批量修改约束来做性能上得优化。</p>
+</li>
+<li><p><code>needsUpdateConstraints</code>: 返回BOOL值，来决定是否调用<code>updateConstraints</code>。</p>
+</li>
+<li><p><code>updateConstraintsIfNeeded</code>: 强制立即触发约束更新，自动更新布局。</p>
+</li>
+<li><p><code>updateConstraints</code>: 这个基本就是自定义View的时候重写这个方法，里面写约束，别忘调用super哈。</p>
+</li>
+</ul>
+<p>可以这样理解: </p>
+<p><code>setNeedsUpdateConstraints</code> ——&gt; <code>updateConstraintsIfNeeded</code> ——&gt; <code>updateConstraintsIfNeeded</code>(YES) ——&gt; <code>updateConstraints</code></p>
+<p>写了个简单的<code>Demo</code>来说明一些事情。</p>
+<p><code>Demo</code>地址: <a href="https://github.com/swifterfit/odd-tutorial/tree/master/LayoutDemo" target="_blank" rel="noopener">LayoutDemo</a></p>
+<p>以后的<code>Demo</code>都用<code>Swift</code>写，以后的<code>Demo</code>都用<code>Swift</code>写，以后的<code>Demo</code>都用<code>Swift</code>写，哈哈！！！</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">    //彩色View高度约束</span><br><span class="line">    @IBOutlet weak var heightConstraint: NSLayoutConstraint!</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    @IBAction func btnAction(_ sender: Any) &#123;</span><br><span class="line">        </span><br><span class="line">        //这里写上这句话完全是为了在下次更新周期到来之前，确保布局的更改都是已经完成的， 避免一些不必要的麻烦！建议加上啊。</span><br><span class="line">        view.layoutIfNeeded()</span><br><span class="line">        </span><br><span class="line">        if self.heightConstraint.constant == 100 &#123;</span><br><span class="line">            self.heightConstraint.constant = 400</span><br><span class="line">        &#125;else &#123;</span><br><span class="line">            self.heightConstraint.constant = 100</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        UIView.animate(withDuration: 1.0) &#123;</span><br><span class="line">            </span><br><span class="line">            /**</span><br><span class="line">             使用layoutIfNeeded()，会有动画效果。</span><br><span class="line">             使用setNeedsLayout()，没有动画效果。</span><br><span class="line">             */</span><br><span class="line"></span><br><span class="line">            self.view.layoutIfNeeded()</span><br><span class="line">//            self.view.setNeedsLayout()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>先看下用<code>layoutIfNeeded()</code> ： 有动画效果是因为立即布局，此布局是同步发生的，所以在<code>animation</code>的<code>block</code>中可以捕捉到约束的更改。</p>
+<p>在看用<code>setNeedsLayout()</code>：看来也能立即更新，就是没有动画了。为啥不用<code>layoutIfNeeded()</code>也能立即更新了？</p>
+<p>首先动画是发生在自己的线程里，不是发生在更新周期的主线程，下一更新周期触发动画，动画期间，约束改变的进度被呈现在主线程上来刷新UI， 你可以这样理解，按钮时间完成的时候，系统没别的事情处理了，就发生了更新周期，这时候才更新约束。 <code>block</code>没有捕获到约束的变化，所以没动画！好好理解一下。 在<code>block</code>里面的<code>setNeedsLayout()</code>只是标记了约束的更新。</p>
+<p>把<code>animation</code>去掉的话，只用<code>block</code>里面的内容，再体验一下吧。</p>
+<h3 id="布局相关"><a href="#布局相关" class="headerlink" title="布局相关"></a>布局相关</h3><p><b id="layoutSubviews"></b></p>
+<h4 id="layoutSubviews"><a href="#layoutSubviews" class="headerlink" title="layoutSubviews"></a><code>layoutSubviews</code></h4><p><code>Apple</code>文档介绍：</p>
+<blockquote>
+<p>The default implementation of this method does nothing on iOS 5.1 and earlier. Otherwise, the default implementation uses any constraints you have set to determine the size and position of any subviews.</p>
+</blockquote>
+<ul>
+<li>在iOS5.1及更早的版本中这个方法默认不执行。而在iOS5.1之后，此方法默认执行你在所有子视图中已经明确设置的所有尺寸和位置约束。</li>
+</ul>
+<blockquote>
+<p>Subclasses can override this method as needed to perform more precise layout of their subviews. You should override this method only if the autoresizing and constraint-based behaviors of the subviews do not offer the behavior you want. You can use your implementation to set the frame rectangles of your subviews directly</p>
+</blockquote>
+<ul>
+<li>必要时可以在子类中重写这个方法，以实现更加精细的子视图布局。只要子视图的自动尺寸调整和基于约束系统行为不能提供你想要的效果，你就应该重写这个方法，直接设置子视图的<code>frame</code>（来实现你想要的效果）。</li>
+</ul>
+<blockquote>
+<p>You should not call this method directly. If you want to force a layout update, call the setNeedsLayout method instead to do so prior to the next drawing update. If you want to update the layout of your views immediately, call the layoutIfNeeded method.</p>
+</blockquote>
+<ul>
+<li>你不应该直接调用此方法，如果想强制更新布局，要调用 <code>setNeedsLayout</code> 方法，但该方法不会立即 重绘视图(drawing) 。如果想立即跟新 视图布局<code>layout</code> ，请调用 <code>layoutIfNeeded</code>方法。</li>
+</ul>
+<h5 id="什么时候系统会执行layoutSubviews"><a href="#什么时候系统会执行layoutSubviews" class="headerlink" title="什么时候系统会执行layoutSubviews"></a>什么时候系统会执行<code>layoutSubviews</code></h5><p><code>layoutSubviews</code>不是供用户来调用的，而是系统自动调用的，我们能做的就是重写该方法。那么什么时候系统会调用<code>layoutSubviews</code>方法呢？</p>
+<ol>
+<li>调用 <code>addSubview</code>方法时会执行该方法。</li>
+<li>设置并改变子视图的<code>frame</code>属性时会触发该方法。</li>
+<li>滑动<code>UIScrollView</code>及继承与<code>UIScrollView</code>的控件时会触发该方法。</li>
+<li>旋转屏幕时，会触发父视图的<code>layoutSubviews</code>方法。</li>
+<li>设置并改变视图的<code>frame</code>属性时会触发父视图的<code>layoutSubviews</code>方法。</li>
+</ol>
+<p><b id="setNeedsLayout"></b></p>
+<h4 id="setNeedsLayout"><a href="#setNeedsLayout" class="headerlink" title="setNeedsLayout"></a><code>setNeedsLayout</code></h4><p><code>Apple</code>文档介绍：</p>
+<blockquote>
+<p>Invalidates the current layout of the receiver and triggers a layout update during the next update cycle.</p>
+</blockquote>
+<ul>
+<li>在当前布局周期发送setNeedsLayout消息是无效的，直到下一个布局周期才会触发布局更新。</li>
+</ul>
+<blockquote>
+<p>Call this method on your application’s main thread when you want to adjust the layout of a view’s subviews. This method makes a note of the request and returns immediately. Because this method does not force an immediate update, but instead waits for the next update cycle, you can use it to invalidate the layout of multiple views before any of those views are updated. This behavior allows you to consolidate all of your layout updates to one update cycle, which is usually better for performance.</p>
+</blockquote>
+<ul>
+<li>当你想要调整子视图的布局时，你可以在应用的主线程调用该方法。这个方法将记录布局请求，并立即返回。由于该方法不强制立即更新，而是等到下一个更新周期，所以你可以在当前的无效周期内添加多个多个视图的布局，等到下一个周期同一更新。这么做通常可以获得更好的性能。</li>
+</ul>
+<p><b id="layoutIfNeeded"></b></p>
+<h4 id="layoutIfNeeded"><a href="#layoutIfNeeded" class="headerlink" title="layoutIfNeeded"></a><code>layoutIfNeeded</code></h4><p><code>Apple</code>文档介绍：</p>
+<blockquote>
+<p>Lays out the subviews immediately.</p>
+</blockquote>
+<ul>
+<li>立即布局子视图。</li>
+</ul>
+<blockquote>
+<p>Use this method to force the layout of subviews before drawing. Using the view that receives the message as the root view, this method lays out the view subtree starting at the root.</p>
+</blockquote>
+<ul>
+<li>使用这个方法可以在系统绘制视图之前强制（重新）布局子视图。这个方法将从当前视图开始布局当前视图树之下的所有子视图。</li>
+</ul>
+<p><strong>Tips</strong></p>
+<ul>
+<li><p><code>layoutSubviews</code>：默认没有做任何事情，需要子类进行重写，对<code>subviews</code>重新布局, 如果用<code>frame</code>布局，自定义<code>View</code>尽量在这里写<code>Frame</code>。</p>
+</li>
+<li><p><code>setNeedsLayout</code>： 标记为需要重新布局，异步调用<code>layoutIfNeeded</code>刷新布局，不立即刷新，但<code>layoutSubviews</code>一定会被调用</p>
+</li>
+<li><code>layoutIfNeeded</code>：如果有需要刷新的标记，立即调用<code>layoutSubviews</code>进行布局（如果没有标记，不会调用<code>layoutSubviews</code>）</li>
+</ul>
+<p>其实和<code>约束相关</code>里面的方法差不多意思，一个针对约束，一个针对<code>Frame</code>。</p>
+<h3 id="重绘相关"><a href="#重绘相关" class="headerlink" title="重绘相关"></a>重绘相关</h3><ul>
+<li><code>drawRect:(CGRect)rect</code>：重写此方法，执行重绘任务，不能直接调用</li>
+<li><code>setNeedsDisplay</code>：标记为需要重绘，异步调用<code>drawRect</code>，在下一个<code>draw</code>周期自动重绘，iphone device的刷新频率是60hz，也就是1/60秒后重绘 </li>
+<li><code>setNeedsDisplayInRect:(CGRect)invalidRect</code>：标记为需要局部重绘</li>
+</ul>
+<h4 id="drawRect在什么情况下会被调用？"><a href="#drawRect在什么情况下会被调用？" class="headerlink" title="drawRect在什么情况下会被调用？"></a><code>drawRect</code>在什么情况下会被调用？</h4><ol>
+<li>如果在<code>UIView</code>初始化时没有设置<code>rect</code>大小，将直接导致<code>drawRect</code>不被自动调用。<code>drawRect</code>调用是在<code>ViewController</code>-&gt;<code>loadView</code>, <code>ViewController</code>-&gt;<code>viewDidLoad</code> 两方法之后掉用的.所以不用担心在控制器中,这些<code>View</code>的<code>drawRect</code>就开始画了.这样可以在控制器中设置一些值给<code>View</code>(如果这些<code>View</code> <code>draw</code>的时候需要用到某些变量值).</li>
+</ol>
+<ol start="2">
+<li>该方法在调用<code>sizeToFit</code>后被调用，所以可以先调用<code>sizeToFit</code>计算出<code>size</code>。然后系统自动调用<code>drawRect:</code>方法。</li>
+<li>通过设置<code>contentMode</code>属性值为<code>UIViewContentModeRedraw</code>。那么将在每次设置或更改<code>frame</code>的时候自动调用<code>drawRect</code></li>
+<li>直接调用<code>setNeedsDisplay</code>，或者<code>setNeedsDisplayInRect:</code>触发<code>drawRect:</code>，但是有个前提条件是<code>rect</code>不能为0。</li>
+</ol>
+<h4 id="drawRect方法使用注意点："><a href="#drawRect方法使用注意点：" class="headerlink" title="drawRect方法使用注意点："></a><code>drawRect</code>方法使用注意点：</h4><ol>
+<li>若使用<code>UIView</code>绘图，只能在<code>drawRect：</code>方法中获取相应的<code>contextRef</code>并绘图。如果在其他方法中获取将获取到一个<code>invalidate</code>的<code>ref</code>并且不能用于画图。<code>drawRect：</code>方法不能手动显示调用，必须通过调用<code>setNeedsDisplay</code>或者 <code>setNeedsDisplayInRect:</code>，让系统自动调该方法。</li>
+<li>若使用<code>CALayer</code>绘图，只能在<code>drawInContext:</code>中（类似于<code>drawRect</code>）绘制，或者在<code>delegate</code>中的相应方法绘制。同样也是调用<code>setNeedDisplay</code>等间接调用以上方法</li>
+<li>若要实时画图，不能使用<code>gestureRecognizer</code>，只能使用<code>touchbegan</code>等方法来调用<code>setNeedsDisplay</code>实时刷新屏幕</li>
+</ol>
+<p>最近想看下<code>Masonry</code>的源码，有时间再来一发儿。</p>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/02/15/lc1/" data-tooltip="1.Two Sum" aria-label="上一篇: 1.Two Sum">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/07/02/UITableViewCell 动态高度/" data-tooltip="UITableViewCell 动态高度" aria-label="下一篇: UITableViewCell 动态高度">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2019 Salmons. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/02/15/lc1/" data-tooltip="1.Two Sum" aria-label="上一篇: 1.Two Sum">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/07/02/UITableViewCell 动态高度/" data-tooltip="UITableViewCell 动态高度" aria-label="下一篇: UITableViewCell 动态高度">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+    <i id="btn-close-shareoptions" class="fa fa-times"></i>
+    <ul class="share-options">
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/favicon.ico" alt="作者的图片">
+        
+            <h4 id="about-card-name">Salmons</h4>
+        
+            <div id="about-card-bio"><p>life begins at the end of your comfort zone</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br>
+                <p>Bodybuilder, SE</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br>
+                China,Beijing
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-vufjrm3fmbuttogo1hxuu0w9w0sesk5iyysjuguc2hdhufot9szxg8twijry.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+        <script>
+             var disqus_config = function () {
+                 this.page.url = 'http://salmons.info/2015/12/08/layout和constraint的几个方法解析/';
+                 
+                    this.page.identifier = '2015/12/08/layout和constraint的几个方法解析/';
+                 
+             };
+            (function() {
+                var d = document, s = d.createElement('script');
+                var disqus_shortname = 'Salmons';
+                s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+
+
+
+    </body>
+</html>

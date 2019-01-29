@@ -1,0 +1,445 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn,en,default">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Salmons&#39;s Pool">
+    <title>707. Design Linked List - Salmons&#39;s Pool</title>
+    <meta name="author" content="Salmons">
+    
+    
+        <link rel="icon" href="http://salmons.info/assets/images/favicon.ico">
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Salmons","sameAs":[],"image":"favicon.ico"},"articleBody":"Design your implementation of the linked list. You can choose to use the singly linked list or the doubly linked list. A node in a singly linked list shouldhave two attributes: val and next. val is the value of the current node, and next is a pointer/reference to the next node. If you want to use the doubly linked list, you will need one more attribute prev to indicate the previous node in the linked list. Assume all nodes in the linked list are 0-indexed.\nImplement these functions in your linked list class:\n\nget(index) : Get the value of the index-th node in the linked list. If the index is invalid, return -1.\naddAtHead(val) : Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list.\naddAtTail(val) : Append a node of value val to the last element of the linked list.\naddAtIndex(index, val) : Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted.\ndeleteAtIndex(index) : Delete the index-th node in the linked list, if the index is valid.\n\nExample:\n1234567MyLinkedList linkedList = new MyLinkedList();linkedList.addAtHead(1);linkedList.addAtTail(3);linkedList.addAtIndex(1, 2);  // linked list becomes 1-&gt;2-&gt;3linkedList.get(1);            // returns 2linkedList.deleteAtIndex(1);  // now the linked list is 1-&gt;3linkedList.get(1);            // returns 3\n题意：设计链表的几种基本操作\n思路：下文代码含有头指针。\nC代码：123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899100101102103104105106107108109110111112113114115116117118119120121122123124125126127128129130131132133134135136137138139140141142143144145146147148149150151152153typedef struct node&#123;    int val;    struct node *next;&#125; MyLinkedList;MyLinkedList* myLinkedListCreate()&#123;    MyLinkedList *head = (MyLinkedList *)malloc(sizeof(MyLinkedList));    head-&gt;val = 0;    head-&gt;next = NULL;        return head;&#125;void printLinkedList(MyLinkedList *obj)&#123;    if (obj == NULL || obj-&gt;next == NULL) &#123;        return;    &#125;    MyLinkedList *cur = obj-&gt;next;    while (cur) &#123;        printf(&quot;%d&quot;, cur-&gt;val);        printf(&quot;-&gt;&quot;);        cur = cur-&gt;next;    &#125;    printf(&quot;\\n&quot;);&#125;int myLinkedListGet(MyLinkedList* obj, int index)&#123;    if (obj == NULL || obj-&gt;next == NULL) &#123;        return -1;    &#125;        int i = 0;    MyLinkedList* cur = obj-&gt;next;    while (cur != NULL) &#123;        if (i == index) &#123;            return cur-&gt;val;        &#125; else &#123;            i++;            cur = cur-&gt;next;        &#125;    &#125;    return -1;&#125;void myLinkedListAddAtHead(MyLinkedList* obj, int val)&#123;    if (obj == NULL) &#123;        return;    &#125;        MyLinkedList* node = (MyLinkedList *)malloc(sizeof(MyLinkedList));    node-&gt;val = val;    node-&gt;next = obj-&gt;next;    obj-&gt;next = node;&#125;void myLinkedListAddAtTail(MyLinkedList* obj, int val)&#123;    if (obj == NULL) &#123;        return;    &#125;        MyLinkedList* node = (MyLinkedList *)malloc(sizeof(MyLinkedList));    node-&gt;val = val;    node-&gt;next = NULL;        if (obj-&gt;next == NULL) &#123;        obj-&gt;next = node;    &#125; else  &#123;        MyLinkedList* cur = obj-&gt;next;        while (cur-&gt;next != NULL) &#123;            cur = cur-&gt;next;        &#125;        cur-&gt;next = node;    &#125;&#125;void myLinkedListAddAtIndex(MyLinkedList* obj, int index, int val)&#123;    int i = 0;        if (obj == NULL || index &lt; 0) &#123;        return;    &#125;        MyLinkedList* node = (MyLinkedList *)malloc(sizeof(MyLinkedList));    if (index == 0) &#123;        node-&gt;val = val;        node-&gt;next = obj-&gt;next;        obj-&gt;next = node;    &#125; else &#123;        MyLinkedList* pre = obj;        MyLinkedList* cur = obj-&gt;next;        i=0;        while (i &lt; index &amp;&amp; cur != 0) &#123;            pre = cur;            cur = cur-&gt;next;            i++;        &#125;        if (i == index) &#123;            node-&gt;val = val;            node-&gt;next = cur;            pre-&gt;next = node;        &#125;    &#125;&#125;void myLinkedListDeleteAtIndex(MyLinkedList* obj, int index)&#123;    MyLinkedList* tmp;    int i = 0;        if (obj == NULL || obj-&gt;next == NULL) &#123;        return;    &#125;        if (index == 0) &#123;        tmp = obj-&gt;next;        obj-&gt;next = tmp-&gt;next;        free(tmp);    &#125; else &#123;        MyLinkedList* pre = obj;        MyLinkedList* cur = obj-&gt;next;        while (i &lt; index &amp;&amp; cur != 0) &#123;            pre = cur;            cur = cur-&gt;next;            i++;        &#125;        if (i == index &amp;&amp; cur != 0) &#123;            tmp = cur;            pre-&gt;next = cur-&gt;next;        &#125;    &#125;&#125;void myLinkedListFree(MyLinkedList* obj)&#123;    if (obj == NULL) &#123;        return;    &#125;        MyLinkedList* cur = obj-&gt;next;    while(cur != 0) &#123;        obj-&gt;next = cur-&gt;next;        free(cur);        cur = obj-&gt;next;    &#125;    free(obj);&#125;\n","dateCreated":"2016-03-09T23:15:02+08:00","dateModified":"2019-01-29T10:33:46+08:00","datePublished":"2016-03-09T23:15:02+08:00","description":"Design your implementation of the linked list. You can choose to use the singly linked list or the doubly linked list. A node in a singly linked list should","headline":"707. Design Linked List","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://salmons.info/2016/03/09/lc707/"},"publisher":{"@type":"Organization","name":"Salmons","sameAs":[],"image":"favicon.ico","logo":{"@type":"ImageObject","url":"favicon.ico"}},"url":"http://salmons.info/2016/03/09/lc707/","keywords":"LeetCode, LinkedList"}</script>
+    <meta name="description" content="Design your implementation of the linked list. You can choose to use the singly linked list or the doubly linked list. A node in a singly linked list should">
+<meta name="keywords" content="LeetCode,LinkedList">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="707. Design Linked List">
+<meta property="og:url" content="http://salmons.info/2016/03/09/lc707/index.html">
+<meta property="og:site_name" content="Salmons&#39;s Pool">
+<meta property="og:description" content="Design your implementation of the linked list. You can choose to use the singly linked list or the doubly linked list. A node in a singly linked list should">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2019-01-29T02:33:46.336Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="707. Design Linked List">
+<meta name="twitter:description" content="Design your implementation of the linked list. You can choose to use the singly linked list or the doubly linked list. A node in a singly linked list should">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://salmons.info/assets/images/favicon.ico"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-du2xmrqdqrl2ollgeiw050kpl6l4nbyz7bumjuurjgsxyopifvukebxc9lqe.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Salmons&#39;s Pool</a>
+    </div>
+    
+        
+            <a class="header-right-icon " href="/">
+        
+        
+            <i class="fa fa-home fa-lg"></i>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/favicon.ico" alt="作者的图片">
+                </a>
+                <h4 class="sidebar-profile-name">Salmons</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>life begins at the end of your comfort zone</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/ " title="首页">
+                    
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-archives" title="归档">
+                    
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-categories" title="分类">
+                    
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-tags" title="标签">
+                    
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="#about" title="关于">
+                    
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://github.com/swifterfit" target="_blank" rel="noopener" title="GitHub">
+                    
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://www.instagram.com/swifterfit/" target="_blank" rel="noopener" title="Instagram">
+                    
+                        <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Instagram</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="mailto:swifterfit@gmail.com" target="_blank" rel="noopener" title="邮箱">
+                    
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/atom.xml" title="RSS">
+                    
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            707. Design Linked List
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2016-03-09T23:15:02+08:00">
+	
+		    3月 09, 2016
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/LeetCode/">LeetCode</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>Design your implementation of the linked list. You can choose to use the singly linked list or the doubly linked list. A node in a singly linked list should<br><a id="more"></a><br>have two attributes: val and next. val is the value of the current node, and next is a pointer/reference to the next node. If you want to use the doubly linked list, you will need one more attribute prev to indicate the previous node in the linked list. Assume all nodes in the linked list are 0-indexed.</p>
+<p>Implement these functions in your linked list class:</p>
+<ul>
+<li>get(index) : Get the value of the index-th node in the linked list. If the index is invalid, return -1.</li>
+<li>addAtHead(val) : Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list.</li>
+<li>addAtTail(val) : Append a node of value val to the last element of the linked list.</li>
+<li>addAtIndex(index, val) : Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted.</li>
+<li>deleteAtIndex(index) : Delete the index-th node in the linked list, if the index is valid.</li>
+</ul>
+<p>Example:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MyLinkedList linkedList = new MyLinkedList();</span><br><span class="line">linkedList.addAtHead(1);</span><br><span class="line">linkedList.addAtTail(3);</span><br><span class="line">linkedList.addAtIndex(1, 2);  // linked list becomes 1-&gt;2-&gt;3</span><br><span class="line">linkedList.get(1);            // returns 2</span><br><span class="line">linkedList.deleteAtIndex(1);  // now the linked list is 1-&gt;3</span><br><span class="line">linkedList.get(1);            // returns 3</span><br></pre></td></tr></table></figure>
+<h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>设计链表的几种基本操作</p>
+<h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>下文代码含有头指针。</p>
+<h4 id="C代码："><a href="#C代码：" class="headerlink" title="C代码："></a>C代码：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br></pre></td><td class="code"><pre><span class="line">typedef struct node&#123;</span><br><span class="line">    int val;</span><br><span class="line">    struct node *next;</span><br><span class="line">&#125; MyLinkedList;</span><br><span class="line"></span><br><span class="line">MyLinkedList* myLinkedListCreate()</span><br><span class="line">&#123;</span><br><span class="line">    MyLinkedList *head = (MyLinkedList *)malloc(sizeof(MyLinkedList));</span><br><span class="line">    head-&gt;val = 0;</span><br><span class="line">    head-&gt;next = NULL;</span><br><span class="line">    </span><br><span class="line">    return head;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void printLinkedList(MyLinkedList *obj)</span><br><span class="line">&#123;</span><br><span class="line">    if (obj == NULL || obj-&gt;next == NULL) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    MyLinkedList *cur = obj-&gt;next;</span><br><span class="line">    while (cur) &#123;</span><br><span class="line">        printf(&quot;%d&quot;, cur-&gt;val);</span><br><span class="line">        printf(&quot;-&gt;&quot;);</span><br><span class="line">        cur = cur-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    printf(&quot;\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int myLinkedListGet(MyLinkedList* obj, int index)</span><br><span class="line">&#123;</span><br><span class="line">    if (obj == NULL || obj-&gt;next == NULL) &#123;</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    int i = 0;</span><br><span class="line"></span><br><span class="line">    MyLinkedList* cur = obj-&gt;next;</span><br><span class="line">    while (cur != NULL) &#123;</span><br><span class="line">        if (i == index) &#123;</span><br><span class="line">            return cur-&gt;val;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            i++;</span><br><span class="line">            cur = cur-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return -1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void myLinkedListAddAtHead(MyLinkedList* obj, int val)</span><br><span class="line">&#123;</span><br><span class="line">    if (obj == NULL) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    MyLinkedList* node = (MyLinkedList *)malloc(sizeof(MyLinkedList));</span><br><span class="line">    node-&gt;val = val;</span><br><span class="line">    node-&gt;next = obj-&gt;next;</span><br><span class="line">    obj-&gt;next = node;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void myLinkedListAddAtTail(MyLinkedList* obj, int val)</span><br><span class="line">&#123;</span><br><span class="line">    if (obj == NULL) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    MyLinkedList* node = (MyLinkedList *)malloc(sizeof(MyLinkedList));</span><br><span class="line">    node-&gt;val = val;</span><br><span class="line">    node-&gt;next = NULL;</span><br><span class="line">    </span><br><span class="line">    if (obj-&gt;next == NULL) &#123;</span><br><span class="line">        obj-&gt;next = node;</span><br><span class="line">    &#125; else  &#123;</span><br><span class="line">        MyLinkedList* cur = obj-&gt;next;</span><br><span class="line">        while (cur-&gt;next != NULL) &#123;</span><br><span class="line">            cur = cur-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        cur-&gt;next = node;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void myLinkedListAddAtIndex(MyLinkedList* obj, int index, int val)</span><br><span class="line">&#123;</span><br><span class="line">    int i = 0;</span><br><span class="line">    </span><br><span class="line">    if (obj == NULL || index &lt; 0) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    MyLinkedList* node = (MyLinkedList *)malloc(sizeof(MyLinkedList));</span><br><span class="line">    if (index == 0) &#123;</span><br><span class="line">        node-&gt;val = val;</span><br><span class="line">        node-&gt;next = obj-&gt;next;</span><br><span class="line">        obj-&gt;next = node;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        MyLinkedList* pre = obj;</span><br><span class="line">        MyLinkedList* cur = obj-&gt;next;</span><br><span class="line">        i=0;</span><br><span class="line">        while (i &lt; index &amp;&amp; cur != 0) &#123;</span><br><span class="line">            pre = cur;</span><br><span class="line">            cur = cur-&gt;next;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">        if (i == index) &#123;</span><br><span class="line">            node-&gt;val = val;</span><br><span class="line">            node-&gt;next = cur;</span><br><span class="line">            pre-&gt;next = node;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void myLinkedListDeleteAtIndex(MyLinkedList* obj, int index)</span><br><span class="line">&#123;</span><br><span class="line">    MyLinkedList* tmp;</span><br><span class="line">    int i = 0;</span><br><span class="line">    </span><br><span class="line">    if (obj == NULL || obj-&gt;next == NULL) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    if (index == 0) &#123;</span><br><span class="line">        tmp = obj-&gt;next;</span><br><span class="line">        obj-&gt;next = tmp-&gt;next;</span><br><span class="line">        free(tmp);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        MyLinkedList* pre = obj;</span><br><span class="line">        MyLinkedList* cur = obj-&gt;next;</span><br><span class="line">        while (i &lt; index &amp;&amp; cur != 0) &#123;</span><br><span class="line">            pre = cur;</span><br><span class="line">            cur = cur-&gt;next;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">        if (i == index &amp;&amp; cur != 0) &#123;</span><br><span class="line">            tmp = cur;</span><br><span class="line">            pre-&gt;next = cur-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void myLinkedListFree(MyLinkedList* obj)</span><br><span class="line">&#123;</span><br><span class="line">    if (obj == NULL) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    MyLinkedList* cur = obj-&gt;next;</span><br><span class="line">    while(cur != 0) &#123;</span><br><span class="line">        obj-&gt;next = cur-&gt;next;</span><br><span class="line">        free(cur);</span><br><span class="line">        cur = obj-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    free(obj);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/LeetCode/">LeetCode</a> <a class="tag tag--primary tag--small t-link" href="/tags/LinkedList/">LinkedList</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/10/lc141/" data-tooltip="141. Linked List Cycle" aria-label="上一篇: 141. Linked List Cycle">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/08/Objective-C Runtime/" data-tooltip="理解OC运行时" aria-label="下一篇: 理解OC运行时">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2019 Salmons. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/10/lc141/" data-tooltip="141. Linked List Cycle" aria-label="上一篇: 141. Linked List Cycle">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/08/Objective-C Runtime/" data-tooltip="理解OC运行时" aria-label="下一篇: 理解OC运行时">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+    <i id="btn-close-shareoptions" class="fa fa-times"></i>
+    <ul class="share-options">
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/favicon.ico" alt="作者的图片">
+        
+            <h4 id="about-card-name">Salmons</h4>
+        
+            <div id="about-card-bio"><p>life begins at the end of your comfort zone</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br>
+                <p>Bodybuilder, SE</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br>
+                China,Beijing
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-vufjrm3fmbuttogo1hxuu0w9w0sesk5iyysjuguc2hdhufot9szxg8twijry.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+        <script>
+             var disqus_config = function () {
+                 this.page.url = 'http://salmons.info/2016/03/09/lc707/';
+                 
+                    this.page.identifier = '2016/03/09/lc707/';
+                 
+             };
+            (function() {
+                var d = document, s = d.createElement('script');
+                var disqus_shortname = 'Salmons';
+                s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+
+
+
+    </body>
+</html>

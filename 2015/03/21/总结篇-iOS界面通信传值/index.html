@@ -1,0 +1,594 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn,en,default">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Salmons&#39;s Pool">
+    <title>iOS界面通信传值 - Salmons&#39;s Pool</title>
+    <meta name="author" content="Salmons">
+    
+    
+        <link rel="icon" href="http://salmons.info/assets/images/favicon.ico">
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Salmons","sameAs":[],"image":"favicon.ico"},"articleBody":"在开发过程中我们在页面传值时我们通常使用的方法有:\n\n属性传值法\nblock传值法\n代理传值法\n单例传值法\n通知传值法\nNSUserDefault\n\n\n属性传值属性传值多用于在将前一个页面的值传到后一个页面去,也就是我们通常说的从前往后传值\n当第一个页面push到第二个页面的时候,我们在第二个页面声明一个属性用于接受从第一个页面传递过去的值,然后在push这个事件被触发的时候进行赋值,也就是说,先初始化创建第二个控制器(页面),然后通过创建的控制器来访问它所对应的属性,将即将传递的值赋给它,这样就完成了属性传值.于是当页面(控制器)被push到第二个页面之后我们访问它的属性的时候,也就顺便获取到了传递过来的值.\n例如:现在有两个控制器FirstViewController和SecondViewController,我们在FirstViewController中创建一个UITextFiled,在SecondViewController中创建一个UILabel,然后在textField中输入文字,我们使用导航控制器来控制页面之间的跳转,当我们跳转到第二个页面的时候,将在textField中输入的文字传递给label,作为label上的文字.\n代码如下:\nFirstViewController中:\nself.navigationItem.title = @&quot;First&quot;;\n// 设置控制器的背景颜色\nself.view.backgroundColor = [UIColor      yellowColor];\n// 设置控制器的右按钮,并创建事件点击调到下一页面\nself.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@&quot;第二页&quot; style:UIBarButtonItemStyleDone target:self action:@selector(next:)];\n// 创建输入框\nself.firstTF = [[UITextField alloc] initWithFrame:CGRectMake(50, 100, 314, 40)];\nself.firstTF.placeholder = @&quot;请输入文字!&quot;;\n_firstTF.borderStyle = UITextBorderStyleLine;\n[self.view addSubview:_firstTF];\nSecondViewController中:\nself.navigationItem.title = @&quot;Second&quot;;\nself.view.backgroundColor = [UIColor cyanColor];\nself.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@&quot;返回&quot; style:UIBarButtonItemStyleDone target:self action:@selector(back:)];\nself.secondLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 100, 314, 40)];\nself.secondLabel.backgroundColor = [UIColor orangeColor];\n// 由上一个页面通过属性传值传过来\nself.secondLabel.text = _tfString;\n[self.view addSubview:_secondLabel];\n我们在SecondViewController的.h文件中设置一个字符串属性用来接收从FirstViewController中传递过来的值.\n@property(nonatomic,strong)NSString *tfString;\n那么我们在什么时候传递这个值呢?\n合适的地方应该是在第一个页面跳转到第二个页面的时候创建,也就是在push方法执行之前进行传值.我们在FirsrViewController的右按钮点击事件也就是next方法中进行传值.\n-(void)next:(UINavigationController *)sender{\nScondViewController *secondNC = [[ScondViewController alloc] init];\n// 将第一个界面的输入框信息赋值给第二个页面的Label\nsecondNC.tfString = _firstTF.text;\n[self.navigationController pushViewController:secondNC animated:YES];   \n}\n这样就实现了从前往后传值,也就是属性传值\n\n代理传值代理传值多用于从后往前传值.\n我们还是使用上面的额例子,比如我们现在在SecondViewController中进行的相关的操作,现在我们要返回到第一个页面,但是我们现在有一个需求就是需要在SecondViewController中创建一个UITextField,在FirstViewController中创建一个UILabel,当页面pop回第一个页面的时候将SecondViewController中textField中的文字传递到FirstViewController中的label上,这个时候,我们就可以使用代理传值.\n我们在SecondViewController的.h中创建一个协议,并且设置代理属性,让其遵循该协议.\n代码如下:\n// 设置一个协议方法\n@protocol SecondVCDelegate \n// 代理传值    \n- (void)passValue:(NSString *)value;\n@end\n// 声明代理属性进行代理传值\n@property(nonatomic,weak)id delegate;\n在SecondViewController中创建textField\nself.secondTF = [[UITextField alloc] initWithFrame:CGRectMake(50, 200, 314, 40)];\nself.secondTF.placeholder = @&quot;请输入&quot;;\nself.secondTF.borderStyle = UITextBorderStyleLine;\n[self.view addSubview:_secondTF];\n在FirstViewController中创建label并让其遵循协议\n#import &quot;FirstViewController.h&quot;\n#import &quot;ScondViewController.h&quot;\n@interface FirstViewController ()\n\n@property(nonatomic,strong)UILabel *firstLab;\n\n@end\n创建UILabel\nself.firstLab = [[UILabel alloc] initWithFrame:CGRectMake(50, 200, 314, 40)];\nself.firstLab.backgroundColor = [UIColor magentaColor];\n[self.view addSubview:_firstLab];\n我们在上述属性传值代码中已经为SecondViewController的导航控制器设置了右按钮(返回按钮),那么,我们只需要在其触发事件(back:)中让代理去执行传值即可.代码如下:\n- (void)back:(UINavigationController *)sender{\n// 代理去执行传值\n[_delegate passValue:_secondTF.text];\n[self.navigationController popViewControllerAnimated:YES]; \n}\n然后在FirstViewController的next方法中为SecondNC制定其代理为其自身即可.实现其代理方法\n- (void)passValue:(NSString *)value{\n_firstLab.text = value; \n}\n这样我们就可以在第一个页面得到第二个页面的值了.\n\nblock传值block的本质就和其他OC中变量类似,只不过block中存储的数据是函数体,但是在使用block时完全可以像调用其他函数似的,传入参数,然后得到返回值.关于详细的block,在这里就不赘述了.\n在iOS开发中我们用到block进行传值的情况多数情况下也是在从后往前传值.所以我们依然使用上述例子.\n使用block传值,首先我们需要在SecondViewController中定义并声明block属性.\n// 定义有参无返回值的匿名函数(传递字符串)\ntypedef void(^MyBlock)(NSString *);\n@interface SecondViewController :     UIViewController\n@property(nonatomic,copy)MyBlock block;\n@end\n同上,我们将SecondViewController中textField中输入的文字传递到FirstViewController中的label上显示.\n我们在SecondViewController的back方法中调用block,并且将在这个控制器的textField中的文字作为block的参数传递给block.\n- (void)back:(UINavigationController *)sender{\n// 代理去执行传值\n   self.block(_secondTF.text);\n[self.navigationController popViewControllerAnimated:YES]; \n}\n然后我们在FirstViewController的next方法中,也就是alloc出SecondViewController的时候调用SecondViewController的block,实现传值\n- (void)back:(UINavigationController *)sender{\n__weak typeof(self)temp = self;\nsecVC.block = ^(NSString *string){\n    // 通过回调将传进来的字符串赋值给label\n    temp.firstLab.text = string;\n};\n[self.navigationController popViewControllerAnimated:YES]; \n}\n在上述代码中,因为block里面不能直接使用属性,实例变量和方法(因为会造成循环引用),所以我们重新用__weak修饰self并重新命名为temp.这样我们就实现了传值.\n\n单例传值由于单例在内存中只创建一次的并且可以全局访问的属性,我们可以在必要的时候将数据存放在单例的属性中,并且在必要的时候从单例中通过访问其属性进行调用,这样就实现值的传递\n首先我们先创建一个单例类DataHandle,在其.h文件中我们使用类方法声明单例创建的方法,并且声明一个字符串属性用来保存值,(因为我们依然使用上述的例子,所以声明字符串,来保存textField中输入的文字,在实际的开发过程中,读者可以自己根据实际情况而定).\n@interface DataHandle : NSObject\n// 创建单例\n+ (instancetype)sharedDataHandle;\n@property(nonatomic,strong)NSString *Str;\n@end\n在.m文件中实现其初始化方法\n@implementation DataHandle\n// 声明静态区对象的原因,希望程序运行期间,在内存中一直存在,这样对外界来说,可以随时读取数据\nstatic DataHandle *dataHandle = nil;\n// 创建单例(全局区)\n+ (instancetype)sharedDataHandle{\n    if (nil == dataHandle) {\n    // 我们创建单例使用加号方法的原因是因为,在创建之前,无法存在一个实例对象去调用动态方法来创建它本身\n    dataHandle = [[DataHandle alloc] init];\n}\nreturn dataHandle; \n}\n@end\n无论是从FirstViewController中将textField的值传到SecondViewController的label上还是反过来传值.我们只需要在需要的时候通过其类方法(+ (instancetype)sharedDataHandle)来创建出单例对象来,然后将textField的text属性以赋值的方式赋给单例的Str属性即可\n代码如下:\n-(void)next:(UINavigationController *)sender{\nDataHandle *dataHandle = [DataHandle sharedDataHandle];\nScondViewController *secondNC = [[ScondViewController alloc] init];\n// 将第一个界面的输入框信息赋值给第二个页面的Label\ndataHandle.Str = _firstTF.text;\n[self.navigationController pushViewController:secondNC animated:YES];   \n}\n假使在SecondViewController中我们为label的text赋值,而其值就是FirstViewController中在textField中输入的值,那么我们可以这样写:\nDataHandle *dataHandle = [DataHandle sharedDataHandle];\nself.secondLabel.text = dataHandle.str;\n如上所述就实现了值的传递.其实单例不知是在两个页面之间进行传递,由于单例的一次创建全局访问的特点,我们可以将值传递到ThreeViewController,FourViewController等等的控制器,相反的也可以反向传递,在此就不在重复了,其实原理都是相同的.\n\n通知传值通知在iOS开发中占据着非常重要的地位,通常在两个页面关联不大,但是需要传递信息的时候传递,这样就可以通过通知来实现.\n我们新建一个控制器来一键切换所有控制器的背景颜色.我们为其取名为:SettingViewController\n创建一个UIButton来控制背景颜色的切换.并且为其设置触发事件在其出发事件中我们发送消息,并且设置通知的name为”change”用来标记通知,设置userInfo,userInfo是一个字典,我们需要将所有控制器的颜色设置为灰色,于是,我们在创建字典的时候其Value值为[UIColor lioghtGrayConlor].\n- (void)changeColor:(UIButton *)sender {   \n// 发送消息\n[[NSNotificationCenter defaultCenter] postNotificationName:@&quot;change&quot; object:nil userInfo:@{@&quot;color&quot;:[UIColor lightGrayColor]}];\n}\n这样当我们点击该button的时候,就发送了一条消息.在其他控制器里,我们设置观察者,注册消息.\n// 注册消息\n[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeTheme:) name:@&quot;change&quot; object:nil];\n当收到消息之后,就会执行changeTheme:方法,我们就可在该方法中获取发送的消息中所传递过来的数据(颜色信息),进行控制器背景颜色的改变.\n- (void)changeTheme:(NSNotification *)sender{ \nself.view.backgroundColor = sender.userInfo[@&quot;color&quot;];  \n}\n在所有控制器里都添加观察者注册消息,并且实现changeTheme方法就实现了背景颜色的切换,而sender.userInfo[@&quot;color&quot;]就是从其他控制器中传递过来的值.我们可以改变userInfo这个字典的信息,从而实现其他类型的值的传递.\n\nNSUserDefault使用文件，或者NSUserdefault来传递//通过文件或者UserDefault方式存值(感觉不太适合此类传值，如果要用文件或者UserDefault方式存值的话，可以考虑此方式)\n存入：\n[[NSUserDefaults standardUserDefaults] setObject:self.nameTextField.text forKey:@\n&apos;myNameText&apos;\n ];\n获取：\nself.nameLabel.text = [[NSUserDefaults standardUserDefaults]    objectForKey:@&apos;myNameText&apos;];\n [[NSUserDefaults standardUserDefaults] setObject:@&apos;&apos; forKey:@&apos;myNameText&apos;]\n大致上就写这么多吧\n","dateCreated":"2015-03-21T13:40:08+08:00","dateModified":"2018-12-17T14:02:45+08:00","datePublished":"2015-03-21T13:40:08+08:00","description":"在开发过程中我们在页面传值时我们通常使用的方法有:","headline":"iOS界面通信传值","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://salmons.info/2015/03/21/总结篇-iOS界面通信传值/"},"publisher":{"@type":"Organization","name":"Salmons","sameAs":[],"image":"favicon.ico","logo":{"@type":"ImageObject","url":"favicon.ico"}},"url":"http://salmons.info/2015/03/21/总结篇-iOS界面通信传值/"}</script>
+    <meta name="description" content="在开发过程中我们在页面传值时我们通常使用的方法有:">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="iOS界面通信传值">
+<meta property="og:url" content="http://salmons.info/2015/03/21/总结篇-iOS界面通信传值/index.html">
+<meta property="og:site_name" content="Salmons&#39;s Pool">
+<meta property="og:description" content="在开发过程中我们在页面传值时我们通常使用的方法有:">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-12-17T06:02:45.644Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS界面通信传值">
+<meta name="twitter:description" content="在开发过程中我们在页面传值时我们通常使用的方法有:">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://salmons.info/assets/images/favicon.ico"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-du2xmrqdqrl2ollgeiw050kpl6l4nbyz7bumjuurjgsxyopifvukebxc9lqe.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Salmons&#39;s Pool</a>
+    </div>
+    
+        
+            <a class="header-right-icon " href="/">
+        
+        
+            <i class="fa fa-home fa-lg"></i>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/favicon.ico" alt="作者的图片">
+                </a>
+                <h4 class="sidebar-profile-name">Salmons</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>life begins at the end of your comfort zone</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/ " title="首页">
+                    
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-archives" title="归档">
+                    
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-categories" title="分类">
+                    
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-tags" title="标签">
+                    
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="#about" title="关于">
+                    
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://github.com/swifterfit" target="_blank" rel="noopener" title="GitHub">
+                    
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://www.instagram.com/swifterfit/" target="_blank" rel="noopener" title="Instagram">
+                    
+                        <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Instagram</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="mailto:swifterfit@gmail.com" target="_blank" rel="noopener" title="邮箱">
+                    
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/atom.xml" title="RSS">
+                    
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            iOS界面通信传值
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2015-03-21T13:40:08+08:00">
+	
+		    3月 21, 2015
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/iOS/">iOS</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>在开发过程中我们在页面传值时我们通常使用的方法有:<br><a id="more"></a></p>
+<ul>
+<li><a href="#属性传值"><strong>属性传值法</strong></a></li>
+<li><a href="#block传值"><strong>block传值法</strong></a></li>
+<li><a href="#代理传值"><strong>代理传值法</strong></a></li>
+<li><a href="#单例传值"><strong>单例传值法</strong></a></li>
+<li><a href="#通知传值"><strong>通知传值法</strong></a></li>
+<li><a href="#NSUserDefault"><strong>NSUserDefault</strong></a></li>
+</ul>
+<p><b id="属性传值"></b></p>
+<h3 id="属性传值"><a href="#属性传值" class="headerlink" title="属性传值"></a>属性传值</h3><p>属性传值多用于在将前一个页面的值传到后一个页面去,也就是我们通常说的从前往后传值</p>
+<p>当第一个页面<code>push</code>到第二个页面的时候,我们在第二个页面声明一个属性用于接受从第一个页面传递过去的值,然后在<code>push</code>这个事件被触发的时候进行赋值,也就是说,先初始化创建第二个控制器(页面),然后通过创建的控制器来访问它所对应的属性,将即将传递的值赋给它,这样就完成了属性传值.于是当页面(控制器)被<code>push</code>到第二个页面之后我们访问它的属性的时候,也就顺便获取到了传递过来的值.</p>
+<p>例如:现在有两个控制器<code>FirstViewController</code>和<code>SecondViewController</code>,我们在<code>FirstViewController</code>中创建一个<code>UITextFiled</code>,在<code>SecondViewController</code>中创建一个<code>UILabel</code>,然后在<code>textField</code>中输入文字,我们使用导航控制器来控制页面之间的跳转,当我们跳转到第二个页面的时候,将在<code>textField</code>中输入的文字传递给<code>label</code>,作为<code>label</code>上的文字.</p>
+<p>代码如下:</p>
+<p><code>FirstViewController</code>中:</p>
+<pre><code>self.navigationItem.title = @&quot;First&quot;;
+// 设置控制器的背景颜色
+self.view.backgroundColor = [UIColor      yellowColor];
+// 设置控制器的右按钮,并创建事件点击调到下一页面
+self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@&quot;第二页&quot; style:UIBarButtonItemStyleDone target:self action:@selector(next:)];
+// 创建输入框
+self.firstTF = [[UITextField alloc] initWithFrame:CGRectMake(50, 100, 314, 40)];
+self.firstTF.placeholder = @&quot;请输入文字!&quot;;
+_firstTF.borderStyle = UITextBorderStyleLine;
+[self.view addSubview:_firstTF];
+</code></pre><p><code>SecondViewController</code>中:</p>
+<pre><code>self.navigationItem.title = @&quot;Second&quot;;
+self.view.backgroundColor = [UIColor cyanColor];
+self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@&quot;返回&quot; style:UIBarButtonItemStyleDone target:self action:@selector(back:)];
+self.secondLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 100, 314, 40)];
+self.secondLabel.backgroundColor = [UIColor orangeColor];
+// 由上一个页面通过属性传值传过来
+self.secondLabel.text = _tfString;
+[self.view addSubview:_secondLabel];
+</code></pre><p>我们在<code>SecondViewController</code>的<code>.h</code>文件中设置一个字符串属性用来接收从<code>FirstViewController</code>中传递过来的值.</p>
+<pre><code>@property(nonatomic,strong)NSString *tfString;
+</code></pre><p>那么我们在什么时候传递这个值呢?</p>
+<p>合适的地方应该是在第一个页面跳转到第二个页面的时候创建,也就是在<code>push</code>方法执行之前进行传值.我们在<code>FirsrViewController</code>的右按钮点击事件也就是<code>next</code>方法中进行传值.</p>
+<pre><code>-(void)next:(UINavigationController *)sender{
+ScondViewController *secondNC = [[ScondViewController alloc] init];
+// 将第一个界面的输入框信息赋值给第二个页面的Label
+secondNC.tfString = _firstTF.text;
+[self.navigationController pushViewController:secondNC animated:YES];   
+}
+</code></pre><p>这样就实现了从前往后传值,也就是属性传值</p>
+<p><b id="代理传值"></b></p>
+<h3 id="代理传值"><a href="#代理传值" class="headerlink" title="代理传值"></a>代理传值</h3><p>代理传值多用于从后往前传值.</p>
+<p>我们还是使用上面的额例子,比如我们现在在<code>SecondViewController</code>中进行的相关的操作,现在我们要返回到第一个页面,但是我们现在有一个需求就是需要在<code>SecondViewController</code>中创建一个<code>UITextField</code>,在<code>FirstViewController</code>中创建一个<code>UILabel</code>,当页面<code>pop</code>回第一个页面的时候将<code>SecondViewController</code>中<code>textField</code>中的文字传递到<code>FirstViewController</code>中的<code>label</code>上,这个时候,我们就可以使用代理传值.</p>
+<p>我们在<code>SecondViewController</code>的<code>.h</code>中创建一个协议,并且设置代理属性,让其遵循该协议.</p>
+<p>代码如下:</p>
+<pre><code>// 设置一个协议方法
+@protocol SecondVCDelegate 
+// 代理传值    
+- (void)passValue:(NSString *)value;
+@end
+// 声明代理属性进行代理传值
+@property(nonatomic,weak)id delegate;
+</code></pre><p>在<code>SecondViewController</code>中创建<code>textField</code></p>
+<pre><code>self.secondTF = [[UITextField alloc] initWithFrame:CGRectMake(50, 200, 314, 40)];
+self.secondTF.placeholder = @&quot;请输入&quot;;
+self.secondTF.borderStyle = UITextBorderStyleLine;
+[self.view addSubview:_secondTF];
+</code></pre><p>在<code>FirstViewController</code>中创建<code>label</code>并让其遵循协议</p>
+<pre><code>#import &quot;FirstViewController.h&quot;
+#import &quot;ScondViewController.h&quot;
+@interface FirstViewController ()
+
+@property(nonatomic,strong)UILabel *firstLab;
+
+@end
+</code></pre><p>创建<code>UILabel</code></p>
+<pre><code>self.firstLab = [[UILabel alloc] initWithFrame:CGRectMake(50, 200, 314, 40)];
+self.firstLab.backgroundColor = [UIColor magentaColor];
+[self.view addSubview:_firstLab];
+</code></pre><p>我们在上述属性传值代码中已经为<code>SecondViewController</code>的导航控制器设置了右按钮(返回按钮),那么,我们只需要在其触发事件<code>(back:)</code>中让代理去执行传值即可.<br>代码如下:</p>
+<pre><code>- (void)back:(UINavigationController *)sender{
+// 代理去执行传值
+[_delegate passValue:_secondTF.text];
+[self.navigationController popViewControllerAnimated:YES]; 
+}
+</code></pre><p>然后在<code>FirstViewControlle</code>r的<code>next</code>方法中为<code>SecondNC</code>制定其代理为其自身即可.<br>实现其代理方法</p>
+<pre><code>- (void)passValue:(NSString *)value{
+_firstLab.text = value; 
+}
+</code></pre><p>这样我们就可以在第一个页面得到第二个页面的值了.</p>
+<p><b id="block传值"></b></p>
+<h3 id="block传值"><a href="#block传值" class="headerlink" title="block传值"></a>block传值</h3><p><code>block</code>的本质就和其他<code>OC</code>中变量类似,只不过<code>block</code>中存储的数据是函数体,但是在使用<code>block</code>时完全可以像调用其他函数似的,传入参数,然后得到返回值.关于详细的<code>block</code>,在这里就不赘述了.</p>
+<p>在<code>iOS</code>开发中我们用到<code>block</code>进行传值的情况多数情况下也是在从后往前传值.所以我们依然使用上述例子.</p>
+<p>使用<code>block</code>传值,首先我们需要在<code>SecondViewController</code>中定义并声明<code>block</code>属性.</p>
+<pre><code>// 定义有参无返回值的匿名函数(传递字符串)
+typedef void(^MyBlock)(NSString *);
+@interface SecondViewController :     UIViewController
+@property(nonatomic,copy)MyBlock block;
+@end
+</code></pre><p>同上,我们将<code>SecondViewController</code>中<code>textField</code>中输入的文字传递到<code>FirstViewController</code>中的<code>label</code>上显示.</p>
+<p>我们在<code>SecondViewController</code>的<code>back</code>方法中调用<code>block</code>,并且将在这个控制器的<code>textField</code>中的文字作为<code>block</code>的参数传递给<code>block</code>.</p>
+<pre><code>- (void)back:(UINavigationController *)sender{
+// 代理去执行传值
+   self.block(_secondTF.text);
+[self.navigationController popViewControllerAnimated:YES]; 
+}
+</code></pre><p>然后我们在<code>FirstViewController</code>的<code>next</code>方法中,也就是<code>alloc</code>出<code>SecondViewController</code>的时候调用<code>SecondViewController</code>的<code>block</code>,实现传值</p>
+<pre><code>- (void)back:(UINavigationController *)sender{
+__weak typeof(self)temp = self;
+secVC.block = ^(NSString *string){
+    // 通过回调将传进来的字符串赋值给label
+    temp.firstLab.text = string;
+};
+[self.navigationController popViewControllerAnimated:YES]; 
+}
+</code></pre><p>在上述代码中,因为<code>block</code>里面不能直接使用属性,实例变量和方法(因为会造成循环引用),所以我们重新用<code>__weak</code>修饰<code>self</code>并重新命名为<code>temp</code>.这样我们就实现了传值.</p>
+<p><b id="单例传值"></b></p>
+<h3 id="单例传值"><a href="#单例传值" class="headerlink" title="单例传值"></a>单例传值</h3><p>由于单例在内存中只创建一次的并且可以全局访问的属性,我们可以在必要的时候将数据存放在单例的属性中,并且在必要的时候从单例中通过访问其属性进行调用,这样就实现值的传递</p>
+<p>首先我们先创建一个单例类<code>DataHandle</code>,在其<code>.h</code>文件中我们使用类方法声明单例创建的方法,并且声明一个字符串属性用来保存值,(因为我们依然使用上述的例子,所以声明字符串,来保存<code>textField</code>中输入的文字,在实际的开发过程中,读者可以自己根据实际情况而定).</p>
+<pre><code>@interface DataHandle : NSObject
+// 创建单例
++ (instancetype)sharedDataHandle;
+@property(nonatomic,strong)NSString *Str;
+@end
+</code></pre><p>在<code>.m</code>文件中实现其初始化方法</p>
+<pre><code>@implementation DataHandle
+// 声明静态区对象的原因,希望程序运行期间,在内存中一直存在,这样对外界来说,可以随时读取数据
+static DataHandle *dataHandle = nil;
+// 创建单例(全局区)
++ (instancetype)sharedDataHandle{
+    if (nil == dataHandle) {
+    // 我们创建单例使用加号方法的原因是因为,在创建之前,无法存在一个实例对象去调用动态方法来创建它本身
+    dataHandle = [[DataHandle alloc] init];
+}
+return dataHandle; 
+}
+@end
+</code></pre><p>无论是从<code>FirstViewController</code>中将<code>textField</code>的值传到<code>SecondViewController</code>的<code>label</code>上还是反过来传值.我们只需要在需要的时候通过其类方法<code>(+ (instancetype)sharedDataHandle)</code>来创建出单例对象来,然后将<code>textField</code>的<code>text</code>属性以赋值的方式赋给单例的Str属性即可</p>
+<p>代码如下:</p>
+<pre><code>-(void)next:(UINavigationController *)sender{
+DataHandle *dataHandle = [DataHandle sharedDataHandle];
+ScondViewController *secondNC = [[ScondViewController alloc] init];
+// 将第一个界面的输入框信息赋值给第二个页面的Label
+dataHandle.Str = _firstTF.text;
+[self.navigationController pushViewController:secondNC animated:YES];   
+}
+</code></pre><p>假使在<code>SecondViewController</code>中我们为<code>label</code>的<code>text</code>赋值,而其值就是<code>FirstViewController</code>中在<code>textField</code>中输入的值,那么我们可以这样写:</p>
+<pre><code>DataHandle *dataHandle = [DataHandle sharedDataHandle];
+self.secondLabel.text = dataHandle.str;
+</code></pre><p>如上所述就实现了值的传递.<br>其实单例不知是在两个页面之间进行传递,由于单例的一次创建全局访问的特点,我们可以将值传递到<code>ThreeViewController</code>,<code>FourViewController</code>等等的控制器,相反的也可以反向传递,在此就不在重复了,其实原理都是相同的.</p>
+<p><b id="通知传值"></b></p>
+<h3 id="通知传值"><a href="#通知传值" class="headerlink" title="通知传值"></a>通知传值</h3><p>通知在<code>iOS</code>开发中占据着非常重要的地位,通常在两个页面关联不大,但是需要传递信息的时候传递,这样就可以通过通知来实现.</p>
+<p>我们新建一个控制器来一键切换所有控制器的背景颜色.我们为其取名为:<code>SettingViewController</code></p>
+<p>创建一个<code>UIButton</code>来控制背景颜色的切换.并且为其设置触发事件<br>在其出发事件中我们发送消息,并且设置通知的<code>name</code>为”change”用来标记通知,设置<code>userInfo,userInfo</code>是一个字典,我们需要将所有控制器的颜色设置为灰色,于是,我们在创建字典的时候其Value值为<code>[UIColor lioghtGrayConlor]</code>.</p>
+<pre><code>- (void)changeColor:(UIButton *)sender {   
+// 发送消息
+[[NSNotificationCenter defaultCenter] postNotificationName:@&quot;change&quot; object:nil userInfo:@{@&quot;color&quot;:[UIColor lightGrayColor]}];
+}
+</code></pre><p>这样当我们点击该<code>button</code>的时候,就发送了一条消息.在其他控制器里,我们设置观察者,注册消息.</p>
+<pre><code>// 注册消息
+[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeTheme:) name:@&quot;change&quot; object:nil];
+</code></pre><p>当收到消息之后,就会执行<code>changeTheme:</code>方法,我们就可在该方法中获取发送的消息中所传递过来的数据(颜色信息),进行控制器背景颜色的改变.</p>
+<pre><code>- (void)changeTheme:(NSNotification *)sender{ 
+self.view.backgroundColor = sender.userInfo[@&quot;color&quot;];  
+}
+</code></pre><p>在所有控制器里都添加观察者注册消息,并且实现<code>changeTheme</code>方法就实现了背景颜色的切换,而<code>sender.userInfo[@&quot;color&quot;]</code>就是从其他控制器中传递过来的值.我们可以改变<code>userInfo</code>这个字典的信息,从而实现其他类型的值的传递.</p>
+<p><b id="NSUserDefault"></b></p>
+<h3 id="NSUserDefault"><a href="#NSUserDefault" class="headerlink" title="NSUserDefault"></a>NSUserDefault</h3><p>使用文件，或者<code>NSUserdefault</code>来传递//通过文件或者<code>UserDefault</code>方式存值(感觉不太适合此类传值，如果要用文件或者<code>UserDefault</code>方式存值的话，可以考虑此方式)</p>
+<p>存入：</p>
+<pre><code>[[NSUserDefaults standardUserDefaults] setObject:self.nameTextField.text forKey:@
+&apos;myNameText&apos;
+ ];
+</code></pre><p>获取：</p>
+<pre><code>self.nameLabel.text = [[NSUserDefaults standardUserDefaults]    objectForKey:@&apos;myNameText&apos;];
+ [[NSUserDefaults standardUserDefaults] setObject:@&apos;&apos; forKey:@&apos;myNameText&apos;]
+</code></pre><p>大致上就写这么多吧</p>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/04/01/总结篇-iOS多线程方案/" data-tooltip="iOS多线程方案" aria-label="上一篇: iOS多线程方案">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/03/16/青色的呼伦贝尔和我们青涩的记忆/" data-tooltip="青色的呼伦贝尔和我们青涩的记忆" aria-label="下一篇: 青色的呼伦贝尔和我们青涩的记忆">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2019 Salmons. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/04/01/总结篇-iOS多线程方案/" data-tooltip="iOS多线程方案" aria-label="上一篇: iOS多线程方案">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/03/16/青色的呼伦贝尔和我们青涩的记忆/" data-tooltip="青色的呼伦贝尔和我们青涩的记忆" aria-label="下一篇: 青色的呼伦贝尔和我们青涩的记忆">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+    <i id="btn-close-shareoptions" class="fa fa-times"></i>
+    <ul class="share-options">
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/favicon.ico" alt="作者的图片">
+        
+            <h4 id="about-card-name">Salmons</h4>
+        
+            <div id="about-card-bio"><p>life begins at the end of your comfort zone</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br>
+                <p>Bodybuilder, SE</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br>
+                China,Beijing
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-vufjrm3fmbuttogo1hxuu0w9w0sesk5iyysjuguc2hdhufot9szxg8twijry.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+        <script>
+             var disqus_config = function () {
+                 this.page.url = 'http://salmons.info/2015/03/21/总结篇-iOS界面通信传值/';
+                 
+                    this.page.identifier = '2015/03/21/总结篇-iOS界面通信传值/';
+                 
+             };
+            (function() {
+                var d = document, s = d.createElement('script');
+                var disqus_shortname = 'Salmons';
+                s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+
+
+
+    </body>
+</html>

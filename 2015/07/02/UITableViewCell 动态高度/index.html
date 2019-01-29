@@ -1,0 +1,483 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn,en,default">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Salmons&#39;s Pool">
+    <title>UITableViewCell 动态高度 - Salmons&#39;s Pool</title>
+    <meta name="author" content="Salmons">
+    
+    
+        <link rel="icon" href="http://salmons.info/assets/images/favicon.ico">
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Salmons","sameAs":[],"image":"favicon.ico"},"articleBody":"项目里遇到的问题，查了很多资料，整理并学习一下。我们展示的Feed流，类似新浪微博首页展示列表，需要拿到server数据根据image的尺寸来显示每一条Feed的高度，\n\nAuto Layout with UILabel\nAuto Layout with UITextView\n\n\nAuto Layout with UILabel用xib自定义一个cell继承UITableViewCell，拖入UIImageView和UILabel到cell.contentView中。分别为其加上相关约束， 简单就不截图了。\n注意：UILabel的属性Lines 设置为0，表示多行。\n接下来往storyboard里面拖入UITableView， 设置代理和数据源，注册我们自定义的cell，\nUINib *cellNib = [UINib nibWithNibName:@&quot;CustomCell&quot; bundle:nil];\n[self.tableView registerNib:cellNib     forCellReuseIdentifier:@&quot;CustomCell&quot;];\n测试数据源\nself.tableData = @[@&quot;1\\n2\\n3\\n4\\n5\\n6&quot;, @&quot;123456789012345678901234567890&quot;, @&quot;1\\n2&quot;, @&quot;1\\n2\\n3&quot;, @&quot;1&quot;];\n实现数据源协议方法\n- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section\n{\n    // Return the number of rows in the section.\n    return self.tableData.count;\n}\n\n- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath\n{\n    C1 *cell = [self.tableView dequeueReusableCellWithIdentifier:@&quot;C1&quot;];\n    cell.t.text = [self.tableData objectAtIndex:indexPath.row];\n    return cell;\n}\n从数据源self.tableData中的数据我们可以看到，每一个Cell显示的数据高度是不一样的，那么我们需要动态计算Cell的高度。由于是auto layout，所以我们需要用到的API systemLayoutSizeFittingSize:来计算UITableViewCell所占空间高度。Cell的高度是在- (CGFloat)tableView:(UITableView )tableView heightForRowAtIndexPath:(NSIndexPath )indexPath这个UITableViewDelegate的方法里面传给UITableView的。\nsystemLayoutSizeFittingSize:这个API需要一个cell实例，所以我们先声明并初始化一个cell实例\n//声明\n@property (nonatomic, strong) UITableViewCell *prototypeCell;\n\n//初始化\nself.prototypeCell  = [self.tableView dequeueReusableCellWithIdentifier:@&quot;C1&quot;];\n下面在tableView的协议方法里计算cell的高度\n- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {\n        C1 *cell = (C1 *)self.prototypeCell;\n        cell.t.text = [self.tableData objectAtIndex:indexPath.row];\n    CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];\n    NSLog(@&quot;h=%f&quot;, size.height + 0.5);\n    return 0.5  + size.height;\n}\n由于是systemLayoutSizeFittingSize:此方法是又cell.contentView调用，cell.contenView的高度 + 0.5 = cell的高度。所以 + 0.5 是正确的结果。当然如果直接cell调用此方法就无需 + 0.5 了。\n我为相应部分加了色彩，效果如图：\n\nAuto Layout with UITextView将上述自定义的cell中的UILabel换成UITextView，约束一样。下面是计算cell高度的代码：\n- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {\n    C2 *cell = (C2 *)self.prototypeCell;\n    cell.t.text = [self.tableData objectAtIndex:indexPath.row];\n    CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];\n    CGSize textViewSize = [cell.t sizeThatFits:CGSizeMake(cell.t.frame.size.width, FLT_MAX)];\n    CGFloat h = size.height + textViewSize.height;\n    h = h &gt; 80 ? h : 80;  //80是图片显示的最低高度，通常我们应该为cell提供一个最低高度限制。\n    NSLog(@&quot;h=%f&quot;, h);\n    return 0.5 + h;\n}\n通过sizeThatFits:计算UITextView的高度， 但是为什么要加上systemLayoutSizeFittingSize:返回的高度呢？\n因为UITextView内容的高度不会影响到systemLayoutSizeFittingSize:的高度， 举个例子如图：\n此图中距顶的约束是10, 距底的约束10, 距左边约束是80,距右边的约束是20, 那么systemLayoutSizeFittingSize:返回的CGSize为height等于20.5, width等于100. 它UITextView的frame是不影响systemLayoutSizeFittingSize:的计算。所以得加。\n总结还有非auto layout的解决办法，原理上基本一致，有时间会陆续更新。以及我们经常用的输入框的高度随文字增加而变高，解决办法依然可以使用sizeThatFits:这个方法来动态计算UITextView的高度，进而计算输入框的高度。\n这里只是初步实现了动态高度，如果celll复杂并且量级很大，也要从性能上开始分析！有时间我会再整理一篇。\n","dateCreated":"2015-07-02T13:40:08+08:00","dateModified":"2018-12-17T13:59:01+08:00","datePublished":"2015-07-02T13:40:08+08:00","description":"项目里遇到的问题，查了很多资料，整理并学习一下。我们展示的Feed流，类似新浪微博首页展示列表，","headline":"UITableViewCell 动态高度","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://salmons.info/2015/07/02/UITableViewCell 动态高度/"},"publisher":{"@type":"Organization","name":"Salmons","sameAs":[],"image":"favicon.ico","logo":{"@type":"ImageObject","url":"favicon.ico"}},"url":"http://salmons.info/2015/07/02/UITableViewCell 动态高度/"}</script>
+    <meta name="description" content="项目里遇到的问题，查了很多资料，整理并学习一下。我们展示的Feed流，类似新浪微博首页展示列表，">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="UITableViewCell 动态高度">
+<meta property="og:url" content="http://salmons.info/2015/07/02/UITableViewCell 动态高度/index.html">
+<meta property="og:site_name" content="Salmons&#39;s Pool">
+<meta property="og:description" content="项目里遇到的问题，查了很多资料，整理并学习一下。我们展示的Feed流，类似新浪微博首页展示列表，">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-12-17T05:59:01.846Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="UITableViewCell 动态高度">
+<meta name="twitter:description" content="项目里遇到的问题，查了很多资料，整理并学习一下。我们展示的Feed流，类似新浪微博首页展示列表，">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://salmons.info/assets/images/favicon.ico"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-du2xmrqdqrl2ollgeiw050kpl6l4nbyz7bumjuurjgsxyopifvukebxc9lqe.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Salmons&#39;s Pool</a>
+    </div>
+    
+        
+            <a class="header-right-icon " href="/">
+        
+        
+            <i class="fa fa-home fa-lg"></i>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/favicon.ico" alt="作者的图片">
+                </a>
+                <h4 class="sidebar-profile-name">Salmons</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>life begins at the end of your comfort zone</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/ " title="首页">
+                    
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-archives" title="归档">
+                    
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-categories" title="分类">
+                    
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-tags" title="标签">
+                    
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="#about" title="关于">
+                    
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://github.com/swifterfit" target="_blank" rel="noopener" title="GitHub">
+                    
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://www.instagram.com/swifterfit/" target="_blank" rel="noopener" title="Instagram">
+                    
+                        <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Instagram</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="mailto:swifterfit@gmail.com" target="_blank" rel="noopener" title="邮箱">
+                    
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/atom.xml" title="RSS">
+                    
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            UITableViewCell 动态高度
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2015-07-02T13:40:08+08:00">
+	
+		    7月 02, 2015
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/iOS/">iOS</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>项目里遇到的问题，查了很多资料，整理并学习一下。我们展示的<code>Feed</code>流，类似新浪微博首页展示列表，<br><a id="more"></a><br>需要拿到<code>server</code>数据根据<code>image</code>的尺寸来显示每一条<code>Feed</code>的高度，</p>
+<ul>
+<li><a href="#label"><strong>Auto Layout with UILabel</strong></a></li>
+<li><a href="#textView"><strong>Auto Layout with UITextView</strong></a></li>
+</ul>
+<p><b id="label"></b></p>
+<h3 id="Auto-Layout-with-UILabel"><a href="#Auto-Layout-with-UILabel" class="headerlink" title="Auto Layout with UILabel"></a>Auto Layout with UILabel</h3><p>用<code>xib</code>自定义一个<code>cell</code>继承<code>UITableViewCell</code>，拖入<code>UIImageView</code>和<code>UILabel</code>到<code>cell.contentView</code>中。分别为其加上相关约束， 简单就不截图了。</p>
+<p>注意：<code>UILabel</code>的属性<code>Lines</code> 设置为0，表示多行。</p>
+<p>接下来往<code>storyboard</code>里面拖入<code>UITableView</code>， 设置代理和数据源，注册我们自定义的c<code>ell</code>，</p>
+<pre><code>UINib *cellNib = [UINib nibWithNibName:@&quot;CustomCell&quot; bundle:nil];
+[self.tableView registerNib:cellNib     forCellReuseIdentifier:@&quot;CustomCell&quot;];
+</code></pre><p>测试数据源</p>
+<pre><code>self.tableData = @[@&quot;1\n2\n3\n4\n5\n6&quot;, @&quot;123456789012345678901234567890&quot;, @&quot;1\n2&quot;, @&quot;1\n2\n3&quot;, @&quot;1&quot;];
+</code></pre><p>实现数据源协议方法</p>
+<pre><code>- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    // Return the number of rows in the section.
+    return self.tableData.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    C1 *cell = [self.tableView dequeueReusableCellWithIdentifier:@&quot;C1&quot;];
+    cell.t.text = [self.tableData objectAtIndex:indexPath.row];
+    return cell;
+}
+</code></pre><p>从数据源<code>self.tableData</code>中的数据我们可以看到，每一个<code>Cell</code>显示的数据高度是不一样的，那么我们需要动态计算<code>Cell</code>的高度。由于是<code>auto layout</code>，所以我们需要用到的API <code>systemLayoutSizeFittingSize:</code>来计算<code>UITableViewCell</code>所占空间高度。<code>Cell</code>的高度是在<code>- (CGFloat)tableView:(UITableView )tableView heightForRowAtIndexPath:(NSIndexPath )indexPath</code>这个<code>UITableViewDelegate</code>的方法里面传给<code>UITableView</code>的。</p>
+<p><code>systemLayoutSizeFittingSize:</code>这个API需要一个<code>cell</code>实例，所以我们先声明并初始化一个<code>cell</code>实例</p>
+<pre><code>//声明
+@property (nonatomic, strong) UITableViewCell *prototypeCell;
+
+//初始化
+self.prototypeCell  = [self.tableView dequeueReusableCellWithIdentifier:@&quot;C1&quot;];
+</code></pre><p>下面在<code>tableView</code>的协议方法里计算<code>cell</code>的高度</p>
+<pre><code>- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+        C1 *cell = (C1 *)self.prototypeCell;
+        cell.t.text = [self.tableData objectAtIndex:indexPath.row];
+    CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+    NSLog(@&quot;h=%f&quot;, size.height + 0.5);
+    return 0.5  + size.height;
+}
+</code></pre><p>由于是<code>systemLayoutSizeFittingSize:</code>此方法是又<code>cell.contentView</code>调用，<code>cell.contenView</code>的高度 + 0.5 = <code>cell</code>的高度。所以 + 0.5 是正确的结果。当然如果直接<code>cell</code>调用此方法就无需 + 0.5 了。</p>
+<p>我为相应部分加了色彩，效果如图：</p>
+<p><b id="textView"></b></p>
+<h3 id="Auto-Layout-with-UITextView"><a href="#Auto-Layout-with-UITextView" class="headerlink" title="Auto Layout with UITextView"></a>Auto Layout with UITextView</h3><p>将上述自定义的<code>cell</code>中的<code>UILabel</code>换成<code>UITextView</code>，约束一样。<br>下面是计算<code>cell</code>高度的代码：</p>
+<pre><code>- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    C2 *cell = (C2 *)self.prototypeCell;
+    cell.t.text = [self.tableData objectAtIndex:indexPath.row];
+    CGSize size = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+    CGSize textViewSize = [cell.t sizeThatFits:CGSizeMake(cell.t.frame.size.width, FLT_MAX)];
+    CGFloat h = size.height + textViewSize.height;
+    h = h &gt; 80 ? h : 80;  //80是图片显示的最低高度，通常我们应该为cell提供一个最低高度限制。
+    NSLog(@&quot;h=%f&quot;, h);
+    return 0.5 + h;
+}
+</code></pre><p>通过<code>sizeThatFits:</code>计算<code>UITextView</code>的高度， 但是为什么要加上<code>systemLayoutSizeFittingSize:</code>返回的高度呢？</p>
+<p>因为<code>UITextView</code>内容的高度不会影响到<code>systemLayoutSizeFittingSize:</code>的高度， 举个例子如图：</p>
+<p>此图中距顶的约束是10, 距底的约束10, 距左边约束是80,距右边的约束是20, 那么<code>systemLayoutSizeFittingSize:</code>返回的<code>CGSize</code>为<code>height</code>等于20.5, <code>width</code>等于100. 它<code>UITextView</code>的<code>frame</code>是不影响<code>systemLayoutSizeFittingSize:</code>的计算。所以得加。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>还有非<code>auto layout</code>的解决办法，原理上基本一致，有时间会陆续更新。以及我们经常用的输入框的高度随文字增加而变高，解决办法依然可以使用<code>sizeThatFits:</code>这个方法来动态计算<code>UITextView</code>的高度，进而计算输入框的高度。</p>
+<p>这里只是初步实现了动态高度，如果celll复杂并且量级很大，也要从性能上开始分析！有时间我会再整理一篇。</p>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/12/08/layout和constraint的几个方法解析/" data-tooltip="layout和constraint的几个方法解析" aria-label="上一篇: layout和constraint的几个方法解析">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/06/18/Objective-C编码规范-raywenderlich/" data-tooltip="Objective-C编码规范-raywenderlich.com" aria-label="下一篇: Objective-C编码规范-raywenderlich.com">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2019 Salmons. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/12/08/layout和constraint的几个方法解析/" data-tooltip="layout和constraint的几个方法解析" aria-label="上一篇: layout和constraint的几个方法解析">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/06/18/Objective-C编码规范-raywenderlich/" data-tooltip="Objective-C编码规范-raywenderlich.com" aria-label="下一篇: Objective-C编码规范-raywenderlich.com">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+    <i id="btn-close-shareoptions" class="fa fa-times"></i>
+    <ul class="share-options">
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/favicon.ico" alt="作者的图片">
+        
+            <h4 id="about-card-name">Salmons</h4>
+        
+            <div id="about-card-bio"><p>life begins at the end of your comfort zone</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br>
+                <p>Bodybuilder, SE</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br>
+                China,Beijing
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-vufjrm3fmbuttogo1hxuu0w9w0sesk5iyysjuguc2hdhufot9szxg8twijry.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+        <script>
+             var disqus_config = function () {
+                 this.page.url = 'http://salmons.info/2015/07/02/UITableViewCell 动态高度/';
+                 
+                    this.page.identifier = '2015/07/02/UITableViewCell 动态高度/';
+                 
+             };
+            (function() {
+                var d = document, s = d.createElement('script');
+                var disqus_shortname = 'Salmons';
+                s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+
+
+
+    </body>
+</html>
