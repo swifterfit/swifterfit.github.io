@@ -77,6 +77,102 @@
   </entry>
   
   <entry>
+    <title>234. Palindrome Linked List</title>
+    <link href="http://salmons.info/2016/03/17/lc234/"/>
+    <id>http://salmons.info/2016/03/17/lc234/</id>
+    <published>2016-03-17T15:15:02.000Z</published>
+    <updated>2019-01-30T08:04:01.462Z</updated>
+    
+    <content type="html"><![CDATA[<p>Given a singly linked list, determine if it is a palindrome.<br><a id="more"></a></p><p>Example:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: 1-&gt;2-&gt;2-&gt;1</span><br><span class="line">Output: true</span><br></pre></td></tr></table></figure><p><strong>Follow up:</strong></p><p>Could you do it in O(n) time and O(1) space?</p><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>判断链表是否是回文</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>快慢指针遍历找到中点，以中点为头反转后半部分，同时遍历前半部分和后半部分</p><h4 id="C代码："><a href="#C代码：" class="headerlink" title="C代码："></a>C代码：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">//辅助函数，反转链表</span><br><span class="line">struct ListNode* reverseList(struct ListNode* head) &#123;</span><br><span class="line">    if(head == NULL || head-&gt;next == NULL) &#123;</span><br><span class="line">        return NULL;</span><br><span class="line">    &#125;</span><br><span class="line">    struct ListNode *newHead = reverseList(head-&gt;next);</span><br><span class="line">    head-&gt;next-&gt;next = head;</span><br><span class="line">    head-&gt;next = NULL;</span><br><span class="line"></span><br><span class="line">    return newHead;    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">bool isPalindrome(struct ListNode* head) &#123;</span><br><span class="line">    </span><br><span class="line">    struct ListNode *slow, *fast;</span><br><span class="line">    slow = fast = head;</span><br><span class="line">        </span><br><span class="line">    while(fast &amp;&amp; fast-&gt;next)&#123;</span><br><span class="line">        fast = fast-&gt;next-&gt;next;</span><br><span class="line">        slow = slow-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    //slow is midst</span><br><span class="line">    struct ListNode *half = reverseList(slow);</span><br><span class="line">    </span><br><span class="line">    while(half)&#123;</span><br><span class="line">        if(half-&gt;val == head-&gt;val)&#123;</span><br><span class="line">            half = half-&gt;next;</span><br><span class="line">            head = head-&gt;next;</span><br><span class="line">        &#125;else</span><br><span class="line">            return false;</span><br><span class="line">    &#125;</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>时间复杂度：O(n)</p><p>空间复杂度：O(1)</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Given a singly linked list, determine if it is a palindrome.&lt;br&gt;
+    
+    </summary>
+    
+      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
+    
+    
+      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
+    
+      <category term="LinkedList" scheme="http://salmons.info/tags/LinkedList/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>328. Odd Even Linked List</title>
+    <link href="http://salmons.info/2016/03/16/lc328/"/>
+    <id>http://salmons.info/2016/03/16/lc328/</id>
+    <published>2016-03-16T15:15:02.000Z</published>
+    <updated>2019-01-30T07:55:10.007Z</updated>
+    
+    <content type="html"><![CDATA[<p>Given a singly linked list, group all odd nodes together followed by the even nodes. Please note here we are talking about the node number and not the value in the nodes.<br><a id="more"></a><br>You should try to do it in place. The program should run in O(1) space complexity and O(nodes) time complexity.</p><p>Example:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: 2-&gt;1-&gt;3-&gt;5-&gt;6-&gt;4-&gt;7-&gt;NULL</span><br><span class="line">Output: 2-&gt;3-&gt;6-&gt;7-&gt;1-&gt;5-&gt;4-&gt;NULL</span><br></pre></td></tr></table></figure><p><strong>Note</strong>:</p><ul><li>The relative order inside both the even and odd groups should remain as it was in the input.</li><li>The first node is considered odd, the second node even and so on …</li></ul><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>链表排序，先奇数后偶数</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>两个指针分别代表奇偶的头，另外一个指针提前保存偶数的头，跨越式遍历，最后奇数尾节点接偶数的头</p><h4 id="C代码："><a href="#C代码：" class="headerlink" title="C代码："></a>C代码：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">struct ListNode* oddEvenList(struct ListNode* head) &#123;</span><br><span class="line">        if (head == NULL) &#123;</span><br><span class="line">        return NULL;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    struct ListNode* odd = head;</span><br><span class="line">    struct ListNode* even = head-&gt;next;</span><br><span class="line">    struct ListNode* evenHead = even;</span><br><span class="line">    </span><br><span class="line">    while(even != NULL &amp;&amp; even-&gt;next != NULL)&#123;</span><br><span class="line">        odd-&gt;next = even-&gt;next;</span><br><span class="line">        odd = odd-&gt;next;</span><br><span class="line">        even-&gt;next = odd-&gt;next;</span><br><span class="line">        even = even-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    odd-&gt;next = evenHead;</span><br><span class="line">    return head;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>时间复杂度：O(n)</p><p>空间复杂度：O(1)</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Given a singly linked list, group all odd nodes together followed by the even nodes. Please note here we are talking about the node number and not the value in the nodes.&lt;br&gt;
+    
+    </summary>
+    
+      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
+    
+    
+      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
+    
+      <category term="LinkedList" scheme="http://salmons.info/tags/LinkedList/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>203. Remove Linked List Elements</title>
+    <link href="http://salmons.info/2016/03/15/lc203/"/>
+    <id>http://salmons.info/2016/03/15/lc203/</id>
+    <published>2016-03-15T15:15:02.000Z</published>
+    <updated>2019-01-30T07:46:13.076Z</updated>
+    
+    <content type="html"><![CDATA[<p>Remove all elements from a linked list of integers that have value val.<br><a id="more"></a></p><p>Example:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input:  1-&gt;2-&gt;6-&gt;3-&gt;4-&gt;5-&gt;6, val = 6</span><br><span class="line">Output: 1-&gt;2-&gt;3-&gt;4-&gt;5</span><br></pre></td></tr></table></figure><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>删除值为val的所有节点</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>可以用递归和迭代分别实现</p><h4 id="C代码："><a href="#C代码：" class="headerlink" title="C代码："></a>C代码：</h4><h4 id="迭代"><a href="#迭代" class="headerlink" title="迭代"></a>迭代</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">struct ListNode* removeElements(struct ListNode* head, int val) &#123;</span><br><span class="line">    if (head == NULL) &#123;</span><br><span class="line">    return NULL;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    struct ListNode *cur = head;</span><br><span class="line">    </span><br><span class="line">    while (cur-&gt;next) &#123;</span><br><span class="line">        if (cur-&gt;next-&gt;val == val) &#123;</span><br><span class="line">            cur-&gt;next = cur-&gt;next-&gt;next;</span><br><span class="line">         &#125; else &#123;</span><br><span class="line">            cur = cur-&gt;next;</span><br><span class="line">         &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return head-&gt;val == val ? head-&gt;next : head;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h4 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">struct ListNode* removeElements(struct ListNode* head, int val) &#123;</span><br><span class="line">    if (head == NULL) &#123;return NULL;&#125;</span><br><span class="line">    </span><br><span class="line">    head-&gt;next = removeElements(head-&gt;next, val);</span><br><span class="line">    return head-&gt;val == val ? head-&gt;next : head;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>时间复杂度：O(n)</p><p>空间复杂度：O(1)</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Remove all elements from a linked list of integers that have value val.&lt;br&gt;
+    
+    </summary>
+    
+      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
+    
+    
+      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
+    
+      <category term="LinkedList" scheme="http://salmons.info/tags/LinkedList/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>206. Reverse Linked List</title>
+    <link href="http://salmons.info/2016/03/14/lc206/"/>
+    <id>http://salmons.info/2016/03/14/lc206/</id>
+    <published>2016-03-14T15:15:02.000Z</published>
+    <updated>2019-01-30T07:37:44.122Z</updated>
+    
+    <content type="html"><![CDATA[<p>Reverse a singly linked list.<br><a id="more"></a></p><p>Example:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL</span><br><span class="line">Output: 5-&gt;4-&gt;3-&gt;2-&gt;1-&gt;NULL</span><br></pre></td></tr></table></figure><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>反转链表</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>可以用递归和迭代分别实现</p><h4 id="C代码："><a href="#C代码：" class="headerlink" title="C代码："></a>C代码：</h4><h4 id="迭代"><a href="#迭代" class="headerlink" title="迭代"></a>迭代</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">struct ListNode* reverseList(struct ListNode* head) &#123;</span><br><span class="line">    struct ListNode *prev = NULL;</span><br><span class="line">    struct ListNode *curr = head;</span><br><span class="line">   </span><br><span class="line">    while(curr!= NULL)&#123;</span><br><span class="line">       struct ListNode *temp = curr-&gt;next;</span><br><span class="line">       curr-&gt;next = prev;</span><br><span class="line">       prev = curr;</span><br><span class="line">       curr = temp; </span><br><span class="line">    &#125;</span><br><span class="line">    return prev; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h4 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">struct ListNode* reverseList(struct ListNode* head) &#123;</span><br><span class="line">    if (!head || !head-&gt;next) return head;</span><br><span class="line">    struct ListNode *newHead = reverseList(head-&gt;next);</span><br><span class="line">    head-&gt;next-&gt;next = head;</span><br><span class="line">    head-&gt;next = NULL;</span><br><span class="line">    return newHead;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>时间复杂度：O(n)</p><p>空间复杂度：O(1)</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Reverse a singly linked list.&lt;br&gt;
+    
+    </summary>
+    
+      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
+    
+    
+      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
+    
+      <category term="LinkedList" scheme="http://salmons.info/tags/LinkedList/"/>
+    
+  </entry>
+  
+  <entry>
     <title>19. Remove Nth Node From End of List</title>
     <link href="http://salmons.info/2016/03/13/lc19/"/>
     <id>http://salmons.info/2016/03/13/lc19/</id>
@@ -372,102 +468,6 @@
     <summary type="html">
     
       &lt;p&gt;Given an array of n positive integers and a positive integer s, find&lt;br&gt;
-    
-    </summary>
-    
-      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
-    
-    
-      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
-    
-      <category term="Array&amp;String" scheme="http://salmons.info/tags/Array-String/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>485. Max Consecutive Ones</title>
-    <link href="http://salmons.info/2016/02/29/lc485/"/>
-    <id>http://salmons.info/2016/02/29/lc485/</id>
-    <published>2016-02-29T02:17:12.000Z</published>
-    <updated>2018-12-25T03:33:03.640Z</updated>
-    
-    <content type="html"><![CDATA[<p>Given a binary array, find the maximum number of consecutive 1s in<br><a id="more"></a><br>this array.</p><p>Example:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Input: [1,1,0,1,1,1]</span><br><span class="line">Output: 3</span><br><span class="line">Explanation: The first two digits or the last three digits are consecutive 1s.</span><br><span class="line">    The maximum number of consecutive 1s is 3.</span><br></pre></td></tr></table></figure><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>二进制数组中连续1的最大个数返回</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>遍历一遍</p><h4 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a>Python代码：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def findMaxConsecutiveOnes(self, nums):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type nums: List[int]</span><br><span class="line">        :rtype: int</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        ans = cnt = 0</span><br><span class="line">        for num in nums:</span><br><span class="line">            if num == 1:</span><br><span class="line">                cnt += 1</span><br><span class="line">                ans = max(ans, cnt)</span><br><span class="line">            else:</span><br><span class="line">                cnt = 0</span><br><span class="line">        return ans</span><br></pre></td></tr></table></figure><p>时间复杂度：O(n)</p><p>空间复杂度：O(1)</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Given a binary array, find the maximum number of consecutive 1s in&lt;br&gt;
-    
-    </summary>
-    
-      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
-    
-    
-      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
-    
-      <category term="Array&amp;String" scheme="http://salmons.info/tags/Array-String/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>27. Remove Element</title>
-    <link href="http://salmons.info/2016/02/28/lc27/"/>
-    <id>http://salmons.info/2016/02/28/lc27/</id>
-    <published>2016-02-28T04:11:12.000Z</published>
-    <updated>2018-12-25T03:33:03.640Z</updated>
-    
-    <content type="html"><![CDATA[<p>Given an array nums and a value val, remove all instances of that<br><a id="more"></a><br>value <a href="https://en.wikipedia.org/wiki/In-place_algorithm" target="_blank" rel="noopener">in-place</a> and return the new length.</p><p>Do not allocate extra space for another array, you must do this by modifying the input array <a href="https://en.wikipedia.org/wiki/In-place_algorithm" target="_blank" rel="noopener">in-place</a> with O(1) extra memory.</p><p>The order of elements can be changed. It doesn’t matter what you leave beyond the new length.</p><p>Example 1:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Given nums = [3,2,2,3], val = 3,</span><br><span class="line"></span><br><span class="line">Your function should return length = 2, with the first two elements of nums being 2.</span><br><span class="line"></span><br><span class="line">It doesn&apos;t matter what you leave beyond the returned length.</span><br></pre></td></tr></table></figure><p>Example 2:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Given nums = [0,1,2,2,3,0,4,2], val = 2,</span><br><span class="line"></span><br><span class="line">Your function should return length = 5, with the first five elements of nums containing 0, 1, 3, 0, and 4.</span><br><span class="line"></span><br><span class="line">Note that the order of those five elements can be arbitrary.</span><br><span class="line"></span><br><span class="line">It doesn&apos;t matter what values are set beyond the returned length.</span><br></pre></td></tr></table></figure><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>原地移除数组中等于val的元素，返回移除后数组的长度</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>原地移除，遍历数组，不等于val的元素重新赋值</p><h4 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a>Python代码：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def removeElement(self, nums, val):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type nums: List[int]</span><br><span class="line">        :type val: int</span><br><span class="line">        :rtype: int</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        k = 0</span><br><span class="line">        for idx, num in enumerate(nums):</span><br><span class="line">            if num != val:</span><br><span class="line">                nums[k] = nums[idx]</span><br><span class="line">                k = k+1</span><br><span class="line">        return k</span><br></pre></td></tr></table></figure><p>时间复杂度：O(n)</p><p>空间复杂度：O(1)</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Given an array nums and a value val, remove all instances of that&lt;br&gt;
-    
-    </summary>
-    
-      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
-    
-    
-      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
-    
-      <category term="Array&amp;String" scheme="http://salmons.info/tags/Array-String/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>167. Two Sum II - Input array is sorted</title>
-    <link href="http://salmons.info/2016/02/27/lc167/"/>
-    <id>http://salmons.info/2016/02/27/lc167/</id>
-    <published>2016-02-26T23:31:12.000Z</published>
-    <updated>2018-12-25T03:33:03.639Z</updated>
-    
-    <content type="html"><![CDATA[<p>Given an array of integers that is already sorted in ascending order,<br><a id="more"></a><br>find two numbers such that they add up to a specific target number.</p><p>The function twoSum should return indices of the two numbers such that they add up to the target, where index1 must be less than index2.</p><p>Note:</p><ul><li>Your returned answers (both index1 and index2) are not zero-based.</li><li>You may assume that each input would have exactly one solution and<br>you may not use the same element twice.</li></ul><p>Example:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Input: numbers = [2,7,11,15], target = 9</span><br><span class="line">Output: [1,2]</span><br><span class="line">Explanation: The sum of 2 and 7 is 9. Therefore index1 = 1, index2 = 2.</span><br></pre></td></tr></table></figure><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>有序数组中找到两个数相加之和等于target，返回这两个数的index，index从1开始</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>字典存储数组元素和index的映射，遍历数组，找到target-nums[i]是否在字典中</p><h4 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a>Python代码：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def twoSum(self, numbers, target):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type numbers: List[int]</span><br><span class="line">        :type target: int</span><br><span class="line">        :rtype: List[int]</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        idxDict = dict()</span><br><span class="line">        for idx, num in enumerate(numbers):</span><br><span class="line">            if target - num in idxDict:</span><br><span class="line">                return [idxDict[target - num] + 1, idx + 1]</span><br><span class="line">            idxDict[num] = idx</span><br></pre></td></tr></table></figure><p>时间复杂度：O(n)</p><p>空间复杂度：O(n)</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Given an array of integers that is already sorted in ascending order,&lt;br&gt;
-    
-    </summary>
-    
-      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
-    
-    
-      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
-    
-      <category term="Array&amp;String" scheme="http://salmons.info/tags/Array-String/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>561. Array Partition I</title>
-    <link href="http://salmons.info/2016/02/26/lc561/"/>
-    <id>http://salmons.info/2016/02/26/lc561/</id>
-    <published>2016-02-26T00:27:12.000Z</published>
-    <updated>2018-12-25T03:33:03.640Z</updated>
-    
-    <content type="html"><![CDATA[<p>Given an array of 2n integers, your task is to group these integers<br><a id="more"></a><br>into n pairs of integer, say (a1, b1), (a2, b2), …, (an, bn) which makes sum of min(ai, bi) for all i from 1 to n as large as possible.</p><p>Example:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Input: [1,4,3,2]</span><br><span class="line"></span><br><span class="line">Output: 4</span><br><span class="line">Explanation: n is 2, and the maximum sum of pairs is 4 = min(1, 2) + min(3, 4).</span><br></pre></td></tr></table></figure><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>长度2n的数组，分成n对，使得每对中最小数相加起来最大</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>每对中两个数相差最小时，所有最小数相加最大</p><h4 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a>Python代码：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def arrayPairSum(self, nums):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type nums: List[int]</span><br><span class="line">        :rtype: int</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        return sum(sorted(nums)[::2])</span><br></pre></td></tr></table></figure><p>时间复杂度：O(n)</p><p>空间复杂度：O(1)</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Given an array of 2n integers, your task is to group these integers&lt;br&gt;
     
     </summary>
     
