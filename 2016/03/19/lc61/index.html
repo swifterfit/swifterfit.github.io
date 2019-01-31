@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Salmons&#39;s Pool">
-    <title>234. Palindrome Linked List - Salmons&#39;s Pool</title>
+    <title>61. Rotate List - Salmons&#39;s Pool</title>
     <meta name="author" content="Salmons">
     
     
@@ -15,19 +15,19 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Salmons","sameAs":[],"image":"favicon.ico"},"articleBody":"Given a singly linked list, determine if it is a palindrome.\nExample:\n12Input: 1-&gt;2-&gt;2-&gt;1Output: true\nFollow up:\nCould you do it in O(n) time and O(1) space?\n题意：判断链表是否是回文\n思路：快慢指针遍历找到中点，以中点为头反转后半部分，同时遍历前半部分和后半部分\nC代码：123456789101112131415161718192021222324252627282930313233//辅助函数，反转链表struct ListNode* reverseList(struct ListNode* head) &#123;    if(head == NULL || head-&gt;next == NULL) &#123;        return NULL;    &#125;    struct ListNode *newHead = reverseList(head-&gt;next);    head-&gt;next-&gt;next = head;    head-&gt;next = NULL;    return newHead;    &#125;bool isPalindrome(struct ListNode* head) &#123;        struct ListNode *slow, *fast;    slow = fast = head;            while(fast &amp;&amp; fast-&gt;next)&#123;        fast = fast-&gt;next-&gt;next;        slow = slow-&gt;next;    &#125;    //slow is midst    struct ListNode *half = reverseList(slow);        while(half)&#123;        if(half-&gt;val == head-&gt;val)&#123;            half = half-&gt;next;            head = head-&gt;next;        &#125;else            return false;    &#125;    return true;&#125;\n时间复杂度：O(n)\n空间复杂度：O(1)\n","dateCreated":"2016-03-17T23:15:02+08:00","dateModified":"2019-01-30T16:04:01+08:00","datePublished":"2016-03-17T23:15:02+08:00","description":"Given a singly linked list, determine if it is a palindrome.","headline":"234. Palindrome Linked List","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://salmons.info/2016/03/17/lc234/"},"publisher":{"@type":"Organization","name":"Salmons","sameAs":[],"image":"favicon.ico","logo":{"@type":"ImageObject","url":"favicon.ico"}},"url":"http://salmons.info/2016/03/17/lc234/","keywords":"LeetCode, LinkedList"}</script>
-    <meta name="description" content="Given a singly linked list, determine if it is a palindrome.">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Salmons","sameAs":[],"image":"favicon.ico"},"articleBody":"Given a linked list, rotate the list to the right by k places, where k is non-negative.\nExample:\n12345Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL, k = 2Output: 4-&gt;5-&gt;1-&gt;2-&gt;3-&gt;NULLExplanation:rotate 1 steps to the right: 5-&gt;1-&gt;2-&gt;3-&gt;4-&gt;NULLrotate 2 steps to the right: 4-&gt;5-&gt;1-&gt;2-&gt;3-&gt;NULL\n题意：旋转链表k步\n思路：先遍历整个链表获得链表长度n，然后此时把链表头和尾链接起来，在往后走n - k % n个节点就到达新链表的头结点前一个点，这时断开链表即可\nC代码：12345678910111213141516171819struct ListNode* rotateRight(struct ListNode* head, int k) &#123;    if(!head) &#123;        return NULL;    &#125;    int len = 1;    struct ListNode *cur = head;    while (cur-&gt;next) &#123;        cur = cur-&gt;next;        len++;    &#125;    cur-&gt;next = head;    k %= len;    for (int i = 0; i &lt; len - k; i++) &#123;        cur = cur-&gt;next;    &#125;    struct ListNode *new = cur-&gt;next;    cur-&gt;next = NULL;    return new;&#125;\n时间复杂度：O(n)\n空间复杂度：O(1)\n","dateCreated":"2016-03-19T23:15:02+08:00","dateModified":"2019-01-31T15:06:50+08:00","datePublished":"2016-03-19T23:15:02+08:00","description":"Given a linked list, rotate the list to the right by k places, where k is non-negative.","headline":"61. Rotate List","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://salmons.info/2016/03/19/lc61/"},"publisher":{"@type":"Organization","name":"Salmons","sameAs":[],"image":"favicon.ico","logo":{"@type":"ImageObject","url":"favicon.ico"}},"url":"http://salmons.info/2016/03/19/lc61/","keywords":"LeetCode, LinkedList"}</script>
+    <meta name="description" content="Given a linked list, rotate the list to the right by k places, where k is non-negative.">
 <meta name="keywords" content="LeetCode,LinkedList">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="234. Palindrome Linked List">
-<meta property="og:url" content="http://salmons.info/2016/03/17/lc234/index.html">
+<meta property="og:title" content="61. Rotate List">
+<meta property="og:url" content="http://salmons.info/2016/03/19/lc61/index.html">
 <meta property="og:site_name" content="Salmons&#39;s Pool">
-<meta property="og:description" content="Given a singly linked list, determine if it is a palindrome.">
+<meta property="og:description" content="Given a linked list, rotate the list to the right by k places, where k is non-negative.">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2019-01-30T08:04:01.462Z">
+<meta property="og:updated_time" content="2019-01-31T07:06:50.259Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="234. Palindrome Linked List">
-<meta name="twitter:description" content="Given a singly linked list, determine if it is a palindrome.">
+<meta name="twitter:title" content="61. Rotate List">
+<meta name="twitter:description" content="Given a linked list, rotate the list to the right by k places, where k is non-negative.">
     
     
         
@@ -189,14 +189,14 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title">
-            234. Palindrome Linked List
+            61. Rotate List
         </h1>
     
     
         <div class="post-meta">
-    <time datetime="2016-03-17T23:15:02+08:00">
+    <time datetime="2016-03-19T23:15:02+08:00">
 	
-		    3月 17, 2016
+		    3月 19, 2016
     	
     </time>
     
@@ -214,14 +214,12 @@
     
     <div class="post-content markdown">
         <div class="main-content-wrap">
-            <p>Given a singly linked list, determine if it is a palindrome.<br><a id="more"></a></p>
+            <p>Given a linked list, rotate the list to the right by k places, where k is non-negative.<br><a id="more"></a></p>
 <p>Example:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: 1-&gt;2-&gt;2-&gt;1</span><br><span class="line">Output: true</span><br></pre></td></tr></table></figure>
-<p><strong>Follow up:</strong></p>
-<p>Could you do it in O(n) time and O(1) space?</p>
-<h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>判断链表是否是回文</p>
-<h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>快慢指针遍历找到中点，以中点为头反转后半部分，同时遍历前半部分和后半部分</p>
-<h4 id="C代码："><a href="#C代码：" class="headerlink" title="C代码："></a>C代码：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">//辅助函数，反转链表</span><br><span class="line">struct ListNode* reverseList(struct ListNode* head) &#123;</span><br><span class="line">    if(head == NULL || head-&gt;next == NULL) &#123;</span><br><span class="line">        return NULL;</span><br><span class="line">    &#125;</span><br><span class="line">    struct ListNode *newHead = reverseList(head-&gt;next);</span><br><span class="line">    head-&gt;next-&gt;next = head;</span><br><span class="line">    head-&gt;next = NULL;</span><br><span class="line"></span><br><span class="line">    return newHead;    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">bool isPalindrome(struct ListNode* head) &#123;</span><br><span class="line">    </span><br><span class="line">    struct ListNode *slow, *fast;</span><br><span class="line">    slow = fast = head;</span><br><span class="line">        </span><br><span class="line">    while(fast &amp;&amp; fast-&gt;next)&#123;</span><br><span class="line">        fast = fast-&gt;next-&gt;next;</span><br><span class="line">        slow = slow-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    //slow is midst</span><br><span class="line">    struct ListNode *half = reverseList(slow);</span><br><span class="line">    </span><br><span class="line">    while(half)&#123;</span><br><span class="line">        if(half-&gt;val == head-&gt;val)&#123;</span><br><span class="line">            half = half-&gt;next;</span><br><span class="line">            head = head-&gt;next;</span><br><span class="line">        &#125;else</span><br><span class="line">            return false;</span><br><span class="line">    &#125;</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL, k = 2</span><br><span class="line">Output: 4-&gt;5-&gt;1-&gt;2-&gt;3-&gt;NULL</span><br><span class="line">Explanation:</span><br><span class="line">rotate 1 steps to the right: 5-&gt;1-&gt;2-&gt;3-&gt;4-&gt;NULL</span><br><span class="line">rotate 2 steps to the right: 4-&gt;5-&gt;1-&gt;2-&gt;3-&gt;NULL</span><br></pre></td></tr></table></figure>
+<h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>旋转链表k步</p>
+<h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>先遍历整个链表获得链表长度n，然后此时把链表头和尾链接起来，在往后走n - k % n个节点就到达新链表的头结点前一个点，这时断开链表即可</p>
+<h4 id="C代码："><a href="#C代码：" class="headerlink" title="C代码："></a>C代码：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">struct ListNode* rotateRight(struct ListNode* head, int k) &#123;</span><br><span class="line">    if(!head) &#123;</span><br><span class="line">        return NULL;</span><br><span class="line">    &#125;</span><br><span class="line">    int len = 1;</span><br><span class="line">    struct ListNode *cur = head;</span><br><span class="line">    while (cur-&gt;next) &#123;</span><br><span class="line">        cur = cur-&gt;next;</span><br><span class="line">        len++;</span><br><span class="line">    &#125;</span><br><span class="line">    cur-&gt;next = head;</span><br><span class="line">    k %= len;</span><br><span class="line">    for (int i = 0; i &lt; len - k; i++) &#123;</span><br><span class="line">        cur = cur-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    struct ListNode *new = cur-&gt;next;</span><br><span class="line">    cur-&gt;next = NULL;</span><br><span class="line">    return new;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>时间复杂度：O(n)</p>
 <p>空间复杂度：O(1)</p>
 
@@ -245,7 +243,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/18/lc21/" data-tooltip="21. Merge Two Sorted Lists" aria-label="上一篇: 21. Merge Two Sorted Lists">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/10/21/淘宝选择规格动画效果/" data-tooltip="淘宝选择规格动画效果" aria-label="上一篇: 淘宝选择规格动画效果">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -254,7 +252,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/16/lc328/" data-tooltip="328. Odd Even Linked List" aria-label="下一篇: 328. Odd Even Linked List">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/18/lc21/" data-tooltip="21. Merge Two Sorted Lists" aria-label="下一篇: 21. Merge Two Sorted Lists">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -317,7 +315,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/18/lc21/" data-tooltip="21. Merge Two Sorted Lists" aria-label="上一篇: 21. Merge Two Sorted Lists">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/10/21/淘宝选择规格动画效果/" data-tooltip="淘宝选择规格动画效果" aria-label="上一篇: 淘宝选择规格动画效果">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -326,7 +324,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/16/lc328/" data-tooltip="328. Odd Even Linked List" aria-label="下一篇: 328. Odd Even Linked List">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/18/lc21/" data-tooltip="21. Merge Two Sorted Lists" aria-label="下一篇: 21. Merge Two Sorted Lists">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -419,9 +417,9 @@
     
         <script>
              var disqus_config = function () {
-                 this.page.url = 'http://salmons.info/2016/03/17/lc234/';
+                 this.page.url = 'http://salmons.info/2016/03/19/lc61/';
                  
-                    this.page.identifier = '2016/03/17/lc234/';
+                    this.page.identifier = '2016/03/19/lc61/';
                  
              };
             (function() {

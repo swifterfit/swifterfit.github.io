@@ -77,6 +77,54 @@
   </entry>
   
   <entry>
+    <title>61. Rotate List</title>
+    <link href="http://salmons.info/2016/03/19/lc61/"/>
+    <id>http://salmons.info/2016/03/19/lc61/</id>
+    <published>2016-03-19T15:15:02.000Z</published>
+    <updated>2019-01-31T07:06:50.259Z</updated>
+    
+    <content type="html"><![CDATA[<p>Given a linked list, rotate the list to the right by k places, where k is non-negative.<br><a id="more"></a></p><p>Example:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL, k = 2</span><br><span class="line">Output: 4-&gt;5-&gt;1-&gt;2-&gt;3-&gt;NULL</span><br><span class="line">Explanation:</span><br><span class="line">rotate 1 steps to the right: 5-&gt;1-&gt;2-&gt;3-&gt;4-&gt;NULL</span><br><span class="line">rotate 2 steps to the right: 4-&gt;5-&gt;1-&gt;2-&gt;3-&gt;NULL</span><br></pre></td></tr></table></figure><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>旋转链表k步</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>先遍历整个链表获得链表长度n，然后此时把链表头和尾链接起来，在往后走n - k % n个节点就到达新链表的头结点前一个点，这时断开链表即可</p><h4 id="C代码："><a href="#C代码：" class="headerlink" title="C代码："></a>C代码：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">struct ListNode* rotateRight(struct ListNode* head, int k) &#123;</span><br><span class="line">    if(!head) &#123;</span><br><span class="line">        return NULL;</span><br><span class="line">    &#125;</span><br><span class="line">    int len = 1;</span><br><span class="line">    struct ListNode *cur = head;</span><br><span class="line">    while (cur-&gt;next) &#123;</span><br><span class="line">        cur = cur-&gt;next;</span><br><span class="line">        len++;</span><br><span class="line">    &#125;</span><br><span class="line">    cur-&gt;next = head;</span><br><span class="line">    k %= len;</span><br><span class="line">    for (int i = 0; i &lt; len - k; i++) &#123;</span><br><span class="line">        cur = cur-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    struct ListNode *new = cur-&gt;next;</span><br><span class="line">    cur-&gt;next = NULL;</span><br><span class="line">    return new;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>时间复杂度：O(n)</p><p>空间复杂度：O(1)</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Given a linked list, rotate the list to the right by k places, where k is non-negative.&lt;br&gt;
+    
+    </summary>
+    
+      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
+    
+    
+      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
+    
+      <category term="LinkedList" scheme="http://salmons.info/tags/LinkedList/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>21. Merge Two Sorted Lists</title>
+    <link href="http://salmons.info/2016/03/18/lc21/"/>
+    <id>http://salmons.info/2016/03/18/lc21/</id>
+    <published>2016-03-18T15:15:02.000Z</published>
+    <updated>2019-01-31T07:00:35.880Z</updated>
+    
+    <content type="html"><![CDATA[<p>Merge two sorted linked lists and return it as a new list. The new list should be made by splicing together the nodes of the first two lists.<br><a id="more"></a></p><p>Example:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: 1-&gt;2-&gt;4, 1-&gt;3-&gt;4</span><br><span class="line">Output: 1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4</span><br></pre></td></tr></table></figure><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>合并两个有序的链表</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>遍历</p><h4 id="C代码："><a href="#C代码：" class="headerlink" title="C代码："></a>C代码：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">struct ListNode* mergeTwoLists(struct ListNode* l1, struct ListNode* l2) &#123;</span><br><span class="line">        struct ListNode* newHead= (struct ListNode*)malloc(sizeof(struct ListNode));</span><br><span class="line"></span><br><span class="line">   struct ListNode* cur = newHead;</span><br><span class="line"></span><br><span class="line">    while(l1 &amp;&amp; l2) &#123;</span><br><span class="line">        if(l1-&gt;val &lt; l2-&gt;val) &#123;</span><br><span class="line">            cur-&gt;next = l1;</span><br><span class="line">            l1 = l1-&gt;next;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            cur-&gt;next = l2;</span><br><span class="line">            l2 = l2-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        cur = cur-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    cur-&gt;next = l1 ? l1 : l2;</span><br><span class="line">    return newHead-&gt;next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>时间复杂度：O(n)</p><p>空间复杂度：O(1)</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Merge two sorted linked lists and return it as a new list. The new list should be made by splicing together the nodes of the first two lists.&lt;br&gt;
+    
+    </summary>
+    
+      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
+    
+    
+      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
+    
+      <category term="LinkedList" scheme="http://salmons.info/tags/LinkedList/"/>
+    
+  </entry>
+  
+  <entry>
     <title>234. Palindrome Linked List</title>
     <link href="http://salmons.info/2016/03/17/lc234/"/>
     <id>http://salmons.info/2016/03/17/lc234/</id>
@@ -420,54 +468,6 @@
     <summary type="html">
     
       &lt;p&gt;Given a non-negative index k where k ≤ 33, return the kth index row of the Pascal’s triangle.&lt;br&gt;
-    
-    </summary>
-    
-      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
-    
-    
-      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
-    
-      <category term="Array&amp;String" scheme="http://salmons.info/tags/Array-String/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>189. Rotate Array</title>
-    <link href="http://salmons.info/2016/03/02/lc189/"/>
-    <id>http://salmons.info/2016/03/02/lc189/</id>
-    <published>2016-03-02T15:15:02.000Z</published>
-    <updated>2018-12-25T06:50:32.986Z</updated>
-    
-    <content type="html"><![CDATA[<p>Given an array, rotate the array to the right by k steps, where k is<br><a id="more"></a><br>non-negative.</p><p>Example:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Input: [1,2,3,4,5,6,7] and k = 3</span><br><span class="line">Output: [5,6,7,1,2,3,4]</span><br><span class="line">Explanation:</span><br><span class="line">rotate 1 steps to the right: [7,1,2,3,4,5,6]</span><br><span class="line">rotate 2 steps to the right: [6,7,1,2,3,4,5]</span><br><span class="line">rotate 3 steps to the right: [5,6,7,1,2,3,4]</span><br></pre></td></tr></table></figure><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>数组向右移动k步</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><ul><li>暴力破解，双重循环。提交超时 时间复杂度O(n*n)</li><li>递归，先反转整个数组，然后以length - k为分界点分别反转左右两边的数组</li><li>数组向右移动k步，相当于每个元素向右移动k步，处理k越界。用i映射到(i + k) % n</li></ul><h4 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a>Python代码：</h4><h5 id="暴力破解-超时"><a href="#暴力破解-超时" class="headerlink" title="暴力破解(超时)"></a>暴力破解(超时)</h5><ul><li>时间复杂度: O(n*k)</li><li>空间复杂度: O(1)<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def rotate(self, nums, k):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type nums: List[int]</span><br><span class="line">        :type k: int</span><br><span class="line">        :rtype: void Do not return anything, modify nums in-place instead.</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        for i in range(k):</span><br><span class="line">            p = nums[len(nums) - 1]</span><br><span class="line">            for j in range(len(nums)):</span><br><span class="line">                nums[j], p = p, nums[j]</span><br></pre></td></tr></table></figure></li></ul><h5 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h5><ul><li>时间复杂度: O(n)</li><li>空间复杂度: O(1)<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def rotate(self, nums, k):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type nums: List[int]</span><br><span class="line">        :type k: int</span><br><span class="line">        :rtype: void Do not return anything, modify nums in-place instead.</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        if k is None or k &lt;= 0:</span><br><span class="line">            return </span><br><span class="line">        k = k % len(nums)</span><br><span class="line">        self.reverse(nums, 0, len(nums) - 1)</span><br><span class="line">        self.reverse(nums, k, len(nums) - 1)</span><br><span class="line">        self.reverse(nums, 0, k - 1)</span><br><span class="line"></span><br><span class="line">    def reverse(self, nums, start, end):</span><br><span class="line">        while start &lt; end:</span><br><span class="line">            nums[start], nums[end] = nums[end], nums[start]</span><br><span class="line">            start, end = start + 1, end - 1</span><br></pre></td></tr></table></figure></li></ul><h5 id="平移"><a href="#平移" class="headerlink" title="平移"></a>平移</h5><p>将最后k个元素移动到正确的位置后，剩下的n-k个元素继续平移交换</p><ul><li>时间复杂度: O(n)</li><li>空间复杂度: O(1)<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">        def rotate(self, nums, k):</span><br><span class="line">            &quot;&quot;&quot;</span><br><span class="line">            :type nums: List[int]</span><br><span class="line">            :type k: int</span><br><span class="line">            :rtype: void Do not return anything, modify nums in-place instead.</span><br><span class="line">            &quot;&quot;&quot;</span><br><span class="line">            n, k, j = len(nums), k % len(nums), 0</span><br><span class="line">            while n &gt; 0 and k % n != 0:</span><br><span class="line">                for i in range(0, k):</span><br><span class="line">                    nums[j + i], nums[len(nums) - k + i] = nums[len(nums) - k + i], nums[j + i] # swap</span><br><span class="line">                n, j = n - k, j + k</span><br><span class="line">                k = k % n</span><br></pre></td></tr></table></figure></li></ul>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Given an array, rotate the array to the right by k steps, where k is&lt;br&gt;
-    
-    </summary>
-    
-      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
-    
-    
-      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
-    
-      <category term="Array&amp;String" scheme="http://salmons.info/tags/Array-String/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>209. Minimum Size Subarray Sum</title>
-    <link href="http://salmons.info/2016/03/01/lc209/"/>
-    <id>http://salmons.info/2016/03/01/lc209/</id>
-    <published>2016-03-01T14:15:02.000Z</published>
-    <updated>2018-12-25T03:33:03.639Z</updated>
-    
-    <content type="html"><![CDATA[<p>Given an array of n positive integers and a positive integer s, find<br><a id="more"></a><br>the minimal length of a contiguous subarray of which the sum ≥ s. If there isn’t one, return 0 instead.</p><p>Example:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Input: s = 7, nums = [2,3,1,2,4,3]</span><br><span class="line">Output: 2</span><br><span class="line">Explanation: the subarray [4,3] has the minimal length under the problem constraint.</span><br></pre></td></tr></table></figure><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>找出数组中最小长度的连续数组，这个连续数组总和&gt;=s, 返回数组长度，不存在的话就返回0</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>o(n)使用左右下标制作滑动窗口（子数组）<br>o(nlogn)做一个sums数组，sums[i] 是nums[0]到nums[i]的和，然后使用二分查找</p><h4 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a>Python代码：</h4><h5 id="O-n"><a href="#O-n" class="headerlink" title="O(n)"></a>O(n)</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def minSubArrayLen(self, s, nums):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type s: int</span><br><span class="line">        :type nums: List[int]</span><br><span class="line">        :rtype: int</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        left, right, total, length, res = 0, 0, 0, len(nums), len(nums) + 1</span><br><span class="line">        while right &lt; length:</span><br><span class="line">            while total &lt; s and right &lt; length:</span><br><span class="line">                total += nums[right]</span><br><span class="line">                right += 1</span><br><span class="line">            while total &gt;= s:</span><br><span class="line">                res = min(res, right - left)</span><br><span class="line">                total -= nums[left]</span><br><span class="line">                left += 1</span><br><span class="line">    </span><br><span class="line">        return 0 if res == len(nums) + 1 else res</span><br></pre></td></tr></table></figure><h5 id="O-nlogn"><a href="#O-nlogn" class="headerlink" title="O(nlogn)"></a>O(nlogn)</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def minSubArrayLen(self, s, nums):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type s: int</span><br><span class="line">        :type nums: List[int]</span><br><span class="line">        :rtype: int</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        size = len(nums)</span><br><span class="line">        left, right = 0, size</span><br><span class="line">        bestAns = 0</span><br><span class="line">        while left &lt;= right:</span><br><span class="line">            mid = (left + right) // 2</span><br><span class="line">            if self.solve(mid, s, nums):</span><br><span class="line">                bestAns = mid</span><br><span class="line">                right = mid - 1</span><br><span class="line">            else:</span><br><span class="line">                left = mid + 1</span><br><span class="line">        return bestAns</span><br><span class="line"></span><br><span class="line">    def solve(self, l, s, nums):</span><br><span class="line">        sums = 0</span><br><span class="line">        for x in range(len(nums)):</span><br><span class="line">            sums += nums[x]</span><br><span class="line">            if x &gt;= l:</span><br><span class="line">                sums -= nums[x - l]</span><br><span class="line">            if sums &gt;= s:</span><br><span class="line">                return True</span><br><span class="line">        return False</span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Given an array of n positive integers and a positive integer s, find&lt;br&gt;
     
     </summary>
     
