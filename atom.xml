@@ -77,6 +77,102 @@
   </entry>
   
   <entry>
+    <title>102. Binary Tree Level Order Traversal</title>
+    <link href="http://salmons.info/2016/03/23/lc102/"/>
+    <id>http://salmons.info/2016/03/23/lc102/</id>
+    <published>2016-03-23T15:15:02.000Z</published>
+    <updated>2019-02-12T11:32:35.554Z</updated>
+    
+    <content type="html"><![CDATA[<p>Given a binary tree, return the level order traversal of its nodes’ values. (ie, from left to right, level by level).</p><a id="more"></a><p>Example:</p><p>Given binary tree [3,9,20,null,null,15,7],</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">  3</span><br><span class="line"> / \</span><br><span class="line">9  20</span><br><span class="line">  /  \</span><br><span class="line"> 15   7</span><br></pre></td></tr></table></figure><p>return its level order traversal as:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  [3],</span><br><span class="line">  [9,20],</span><br><span class="line">  [15,7]</span><br><span class="line">]</span><br></pre></td></tr></table></figure><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>层次遍历，返回数据为二维数组</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>返回的是二维数组，用到了队列数据结构，队列元素保存了(node, level), 节点和层级，遍历出队列，<br>如果当前的层级是第一次出现，就存入level对应的list，left入队列，right入队列</p><h4 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a>Python代码：</h4><h4 id="遍历"><a href="#遍历" class="headerlink" title="遍历"></a>遍历</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def levelOrder(self, root):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type root: TreeNode</span><br><span class="line">        :rtype: List[List[int]]</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        from collections import deque</span><br><span class="line">        node_queue = deque()</span><br><span class="line">        node_queue.append((root, 0))</span><br><span class="line"></span><br><span class="line">        res, res_set = [], set()</span><br><span class="line"></span><br><span class="line">        while node_queue:</span><br><span class="line">            node, level = node_queue.popleft()</span><br><span class="line">            if node:</span><br><span class="line">                if level not in res_set:</span><br><span class="line">                    res_set.add(level)</span><br><span class="line">                    res.append([])</span><br><span class="line">                res[level].append(node.val)</span><br><span class="line">                node_queue.append((node.left, level + 1))</span><br><span class="line">                node_queue.append((node.right, level + 1))</span><br><span class="line">        return res</span><br></pre></td></tr></table></figure><p>时间复杂度：O(n)</p><p>空间复杂度：O(n)</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Given a binary tree, return the level order traversal of its nodes’ values. (ie, from left to right, level by level).&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
+    
+    
+      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
+    
+      <category term="BinaryTree" scheme="http://salmons.info/tags/BinaryTree/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>145. Binary Tree Postorder Traversal</title>
+    <link href="http://salmons.info/2016/03/22/lc145/"/>
+    <id>http://salmons.info/2016/03/22/lc145/</id>
+    <published>2016-03-22T15:15:02.000Z</published>
+    <updated>2019-02-12T11:34:02.593Z</updated>
+    
+    <content type="html"><![CDATA[<p>Given a binary tree, return the postorder traversal of its nodes’ values.</p><a id="more"></a><p>Example:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Input: [1,null,2,3]</span><br><span class="line">   1</span><br><span class="line">    \</span><br><span class="line">     2</span><br><span class="line">    /</span><br><span class="line">   3</span><br><span class="line"></span><br><span class="line">Output: [3,2,1]</span><br></pre></td></tr></table></figure><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>中序遍历</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><ul><li>遍历：和先序遍历有点像，先序遍历是根-左-右， 先改成根-右-左，然后反转一下变成左-右-根，即为后序遍历</li><li>递归</li></ul><h4 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a>Python代码：</h4><h4 id="遍历"><a href="#遍历" class="headerlink" title="遍历"></a>遍历</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def postorderTraversal(self, root):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type root: TreeNode</span><br><span class="line">        :rtype: List[int]</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        if root is None:</span><br><span class="line">            return []</span><br><span class="line">        stack, output = [root, ], []</span><br><span class="line">        while stack:</span><br><span class="line">            root = stack.pop()</span><br><span class="line">            output.append(root.val)</span><br><span class="line">            if root.left is not None:</span><br><span class="line">                stack.append(root.left)</span><br><span class="line">            if root.right is not None:</span><br><span class="line">                stack.append(root.right)</span><br><span class="line">        return output[::-1]</span><br></pre></td></tr></table></figure><h4 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def postorderTraversal(self, root):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type root: TreeNode</span><br><span class="line">        :rtype: List[int]</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        res = []</span><br><span class="line">        self.dfs(root, res)</span><br><span class="line">        return res</span><br><span class="line"></span><br><span class="line">    def dfs(self, root, res):</span><br><span class="line">        if root:</span><br><span class="line">            self.dfs(root.left, res)</span><br><span class="line">            self.dfs(root.right, res)</span><br><span class="line">            res.append(root.val)</span><br></pre></td></tr></table></figure><p>时间复杂度：O(n)</p><p>空间复杂度：O(n)</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Given a binary tree, return the postorder traversal of its nodes’ values.&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
+    
+    
+      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
+    
+      <category term="BinaryTree" scheme="http://salmons.info/tags/BinaryTree/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>94. Binary Tree Inorder Traversal</title>
+    <link href="http://salmons.info/2016/03/21/lc94/"/>
+    <id>http://salmons.info/2016/03/21/lc94/</id>
+    <published>2016-03-21T15:15:02.000Z</published>
+    <updated>2019-02-12T11:19:24.333Z</updated>
+    
+    <content type="html"><![CDATA[<p>Given a binary tree, return the inorder traversal of its nodes’ values.</p><a id="more"></a><p>Example:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Input: [1,null,2,3]</span><br><span class="line">   1</span><br><span class="line">    \</span><br><span class="line">     2</span><br><span class="line">    /</span><br><span class="line">   3</span><br><span class="line"></span><br><span class="line">Output: [1,3,2]</span><br></pre></td></tr></table></figure><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>中序遍历</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><ul><li>遍历：利用了stack数据结构，遍历root的left入栈，取出栈顶，加入output，栈顶元素的right替换，保证了左-根-右的顺序</li><li>递归</li></ul><h4 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a>Python代码：</h4><h4 id="遍历"><a href="#遍历" class="headerlink" title="遍历"></a>遍历</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def inorderTraversal(self, root):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type root: TreeNode</span><br><span class="line">        :rtype: List[int]</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        if root is None:</span><br><span class="line">            return []</span><br><span class="line">        stack, output = [], []</span><br><span class="line">        p = root</span><br><span class="line">        while (stack or p):    </span><br><span class="line">            while p:</span><br><span class="line">                stack.append(p)</span><br><span class="line">                p = p.left</span><br><span class="line">            p = stack.pop()</span><br><span class="line">            output.append(p.val)</span><br><span class="line">            p = p.right</span><br><span class="line">        return output</span><br></pre></td></tr></table></figure><h4 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def inorderTraversal(self, root):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type root: TreeNode</span><br><span class="line">        :rtype: List[int]</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        res = []</span><br><span class="line">        self.dfs(root, res)</span><br><span class="line">        return res</span><br><span class="line"></span><br><span class="line">    def dfs(self, root, res):</span><br><span class="line">        if root:</span><br><span class="line">            self.dfs(root.left, res)</span><br><span class="line">            res.append(root.val)</span><br><span class="line">            self.dfs(root.right, res)</span><br></pre></td></tr></table></figure><p>时间复杂度：O(n)</p><p>空间复杂度：O(n)</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Given a binary tree, return the inorder traversal of its nodes’ values.&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
+    
+    
+      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
+    
+      <category term="BinaryTree" scheme="http://salmons.info/tags/BinaryTree/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>144. Binary Tree Preorder Traversal</title>
+    <link href="http://salmons.info/2016/03/20/lc144/"/>
+    <id>http://salmons.info/2016/03/20/lc144/</id>
+    <published>2016-03-20T15:15:02.000Z</published>
+    <updated>2019-02-12T11:22:22.625Z</updated>
+    
+    <content type="html"><![CDATA[<p>Given a binary tree, return the preorder traversal of its nodes’ values.</p><a id="more"></a><p>Example:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Input: [1,null,2,3]</span><br><span class="line">   1</span><br><span class="line">    \</span><br><span class="line">     2</span><br><span class="line">    /</span><br><span class="line">   3</span><br><span class="line"></span><br><span class="line">Output: [1,2,3]</span><br></pre></td></tr></table></figure><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>前序遍历</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><ul><li><p>遍历：利用了stack数据结构，root先入栈，遍历stack，每次取出栈顶，加入输出，栈顶元素right有值就入栈，栈顶元素left有值就入栈，保证了根-左-右的顺序</p></li><li><p>递归</p></li></ul><h4 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a>Python代码：</h4><h4 id="遍历"><a href="#遍历" class="headerlink" title="遍历"></a>遍历</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def preorderTraversal(self, root):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type root: TreeNode</span><br><span class="line">        :rtype: List[int]</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        if root is None:</span><br><span class="line">            return []</span><br><span class="line">        </span><br><span class="line">        stack, output = [root, ], []</span><br><span class="line">        </span><br><span class="line">        while stack:</span><br><span class="line">            root = stack.pop()</span><br><span class="line">            if root is not None:</span><br><span class="line">                output.append(root.val)</span><br><span class="line">                if root.right is not None:</span><br><span class="line">                    stack.append(root.right)</span><br><span class="line">                if root.left is not None:</span><br><span class="line">                    stack.append(root.left)</span><br><span class="line">        </span><br><span class="line">        return output</span><br></pre></td></tr></table></figure><h4 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def preorderTraversal(self, root):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type root: TreeNode</span><br><span class="line">        :rtype: List[int]</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        res = []</span><br><span class="line">        self.dfs(root, res)</span><br><span class="line">        return res</span><br><span class="line"></span><br><span class="line">    def dfs(self, root, res):</span><br><span class="line">        if root:</span><br><span class="line">            res.append(root.val)</span><br><span class="line">            self.dfs(root.left, res)</span><br><span class="line">            self.dfs(root.right, res)</span><br></pre></td></tr></table></figure><p>时间复杂度：O(n)</p><p>空间复杂度：O(n)</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Given a binary tree, return the preorder traversal of its nodes’ values.&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
+    
+    
+      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
+    
+      <category term="BinaryTree" scheme="http://salmons.info/tags/BinaryTree/"/>
+    
+  </entry>
+  
+  <entry>
     <title>61. Rotate List</title>
     <link href="http://salmons.info/2016/03/19/lc61/"/>
     <id>http://salmons.info/2016/03/19/lc61/</id>
@@ -372,102 +468,6 @@
     <summary type="html">
     
       &lt;p&gt;Given an array nums, write a function to move all 0’s to the end of it while maintaining the&lt;br&gt;
-    
-    </summary>
-    
-      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
-    
-    
-      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
-    
-      <category term="Array&amp;String" scheme="http://salmons.info/tags/Array-String/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>26. Remove Duplicates from Sorted Array</title>
-    <link href="http://salmons.info/2016/03/06/lc26/"/>
-    <id>http://salmons.info/2016/03/06/lc26/</id>
-    <published>2016-03-06T15:15:02.000Z</published>
-    <updated>2018-12-25T09:13:31.334Z</updated>
-    
-    <content type="html"><![CDATA[<p>Given a sorted array nums, remove the duplicates in-place such that each element appear only<br><a id="more"></a><br>once and return the new length.</p><p>Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.</p><p>Example:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Given nums = [1,1,2],</span><br><span class="line"></span><br><span class="line">Your function should return length = 2, with the first two elements of nums being 1 and 2 respectively.</span><br><span class="line"></span><br><span class="line">It doesn&apos;t matter what you leave beyond the returned length.</span><br></pre></td></tr></table></figure><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>已排序数组原地去重</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>快慢指针遍历一遍</p><h4 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a>Python代码：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def removeDuplicates(self, nums):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type nums: List[int]</span><br><span class="line">        :rtype: int</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        if nums is None or len(nums) == 0:</span><br><span class="line">            return 0</span><br><span class="line">        i = 0</span><br><span class="line">        for j in range(1, len(nums)):</span><br><span class="line">            if nums[i] != nums[j]:</span><br><span class="line">                i = i + 1</span><br><span class="line">                nums[i] = nums[j]</span><br><span class="line">        return i + 1</span><br></pre></td></tr></table></figure><p>时间复杂度：O(n)</p><p>空间复杂度：O(1)</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Given a sorted array nums, remove the duplicates in-place such that each element appear only&lt;br&gt;
-    
-    </summary>
-    
-      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
-    
-    
-      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
-    
-      <category term="Array&amp;String" scheme="http://salmons.info/tags/Array-String/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>557. Reverse Words in a String III</title>
-    <link href="http://salmons.info/2016/03/05/lc557/"/>
-    <id>http://salmons.info/2016/03/05/lc557/</id>
-    <published>2016-03-05T15:15:02.000Z</published>
-    <updated>2018-12-25T08:55:29.653Z</updated>
-    
-    <content type="html"><![CDATA[<p>Given a string, you need to reverse the order of characters in each word within a sentence<br><a id="more"></a><br>while still preserving whitespace and initial word order.<br>Example:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: &quot;Let&apos;s take LeetCode contest&quot;</span><br><span class="line">Output: &quot;s&apos;teL ekat edoCteeL tsetnoc&quot;</span><br></pre></td></tr></table></figure><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>反转字符串里的每个单词</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>拆分，反转</p><h4 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a>Python代码：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def reverseWords(self, s):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type s: str</span><br><span class="line">        :rtype: str</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        return &quot; &quot;.join(d[::-1] for d in s.split())</span><br></pre></td></tr></table></figure><p>时间复杂度：O(n)</p><p>空间复杂度：O(n)</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Given a string, you need to reverse the order of characters in each word within a sentence&lt;br&gt;
-    
-    </summary>
-    
-      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
-    
-    
-      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
-    
-      <category term="Array&amp;String" scheme="http://salmons.info/tags/Array-String/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>151. Reverse Words in a String</title>
-    <link href="http://salmons.info/2016/03/04/lc151/"/>
-    <id>http://salmons.info/2016/03/04/lc151/</id>
-    <published>2016-03-04T15:15:02.000Z</published>
-    <updated>2018-12-25T08:51:56.547Z</updated>
-    
-    <content type="html"><![CDATA[<p>Given an input string, reverse the string word by word.<br><a id="more"></a><br>Example:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: &quot;the sky is blue&quot;,</span><br><span class="line">Output: &quot;blue is sky the&quot;.</span><br></pre></td></tr></table></figure><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>翻转字符串里的单词，前后有空格的话去除，单词与单词中的多空格只留一个</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><ul><li>空格拆分字串，翻转<h4 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a>Python代码：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class Solution(object):</span><br><span class="line">    def reverseWords(self, s):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type s: str</span><br><span class="line">        :rtype: str</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        words = s.split()</span><br><span class="line">        words.reverse()</span><br><span class="line">        return &quot; &quot;.join(words)</span><br></pre></td></tr></table></figure></li></ul><p>时间复杂度：O(n)</p><p>空间复杂度：O(n)</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Given an input string, reverse the string word by word.&lt;br&gt;
-    
-    </summary>
-    
-      <category term="LeetCode" scheme="http://salmons.info/categories/LeetCode/"/>
-    
-    
-      <category term="LeetCode" scheme="http://salmons.info/tags/LeetCode/"/>
-    
-      <category term="Array&amp;String" scheme="http://salmons.info/tags/Array-String/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>119. Pascal&#39;s Triangle II</title>
-    <link href="http://salmons.info/2016/03/03/lc119/"/>
-    <id>http://salmons.info/2016/03/03/lc119/</id>
-    <published>2016-03-03T12:15:02.000Z</published>
-    <updated>2018-12-25T08:01:44.970Z</updated>
-    
-    <content type="html"><![CDATA[<p>Given a non-negative index k where k ≤ 33, return the kth index row of the Pascal’s triangle.<br><a id="more"></a><br>Note that the row index starts from 0.</p><p><a href="https://upload.wikimedia.org/wikipedia/commons/0/0d/PascalTriangleAnimated2.gif" target="_blank" rel="noopener"></a></p><p>Example:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: 3</span><br><span class="line">Output: [1,3,3,1]</span><br></pre></td></tr></table></figure><h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>返回杨辉三角第k+1行（k为index）</p><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>根据杨辉三角特性构造，比如121，制作两份copy，前面+0和后面+0，0121和1210，然后对应元素相加为1331就是下一行。下面用了python的zip，就是把对应的元素打包成一个元组<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0 1 2 1</span><br><span class="line">+</span><br><span class="line">1 2 1 0</span><br><span class="line">=</span><br><span class="line">1 3 3 1</span><br></pre></td></tr></table></figure></p><h4 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a>Python代码：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def getRow(self, rowIndex):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type rowIndex: int</span><br><span class="line">        :rtype: List[int]</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        row = [1]</span><br><span class="line">        for _ in range(rowIndex):</span><br><span class="line">            row = [x + y for x, y in zip([0]+row, row+[0])]</span><br><span class="line">        return row</span><br></pre></td></tr></table></figure><p>时间复杂度：O(n*n)</p><p>空间复杂度：O(n)</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Given a non-negative index k where k ≤ 33, return the kth index row of the Pascal’s triangle.&lt;br&gt;
     
     </summary>
     

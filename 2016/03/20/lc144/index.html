@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Salmons&#39;s Pool">
-    <title>61. Rotate List - Salmons&#39;s Pool</title>
+    <title>144. Binary Tree Preorder Traversal - Salmons&#39;s Pool</title>
     <meta name="author" content="Salmons">
     
     
@@ -15,19 +15,19 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Salmons","sameAs":[],"image":"favicon.ico"},"articleBody":"Given a linked list, rotate the list to the right by k places, where k is non-negative.\nExample:\n12345Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL, k = 2Output: 4-&gt;5-&gt;1-&gt;2-&gt;3-&gt;NULLExplanation:rotate 1 steps to the right: 5-&gt;1-&gt;2-&gt;3-&gt;4-&gt;NULLrotate 2 steps to the right: 4-&gt;5-&gt;1-&gt;2-&gt;3-&gt;NULL\n题意：旋转链表k步\n思路：先遍历整个链表获得链表长度n，然后此时把链表头和尾链接起来，在往后走n - k % n个节点就到达新链表的头结点前一个点，这时断开链表即可\nC代码：12345678910111213141516171819struct ListNode* rotateRight(struct ListNode* head, int k) &#123;    if(!head) &#123;        return NULL;    &#125;    int len = 1;    struct ListNode *cur = head;    while (cur-&gt;next) &#123;        cur = cur-&gt;next;        len++;    &#125;    cur-&gt;next = head;    k %= len;    for (int i = 0; i &lt; len - k; i++) &#123;        cur = cur-&gt;next;    &#125;    struct ListNode *new = cur-&gt;next;    cur-&gt;next = NULL;    return new;&#125;\n时间复杂度：O(n)\n空间复杂度：O(1)\n","dateCreated":"2016-03-19T23:15:02+08:00","dateModified":"2019-01-31T15:06:50+08:00","datePublished":"2016-03-19T23:15:02+08:00","description":"Given a linked list, rotate the list to the right by k places, where k is non-negative.","headline":"61. Rotate List","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://salmons.info/2016/03/19/lc61/"},"publisher":{"@type":"Organization","name":"Salmons","sameAs":[],"image":"favicon.ico","logo":{"@type":"ImageObject","url":"favicon.ico"}},"url":"http://salmons.info/2016/03/19/lc61/","keywords":"LeetCode, LinkedList"}</script>
-    <meta name="description" content="Given a linked list, rotate the list to the right by k places, where k is non-negative.">
-<meta name="keywords" content="LeetCode,LinkedList">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Salmons","sameAs":[],"image":"favicon.ico"},"articleBody":"Given a binary tree, return the preorder traversal of its nodes’ values.\n\nExample:\n12345678Input: [1,null,2,3]   1    \\     2    /   3Output: [1,2,3]\n题意：前序遍历\n思路：\n遍历：利用了stack数据结构，root先入栈，遍历stack，每次取出栈顶，加入输出，栈顶元素right有值就入栈，栈顶元素left有值就入栈，保证了根-左-右的顺序\n\n递归\n\n\nPython代码：遍历123456789101112131415161718192021class Solution:    def preorderTraversal(self, root):        &quot;&quot;&quot;        :type root: TreeNode        :rtype: List[int]        &quot;&quot;&quot;        if root is None:            return []                stack, output = [root, ], []                while stack:            root = stack.pop()            if root is not None:                output.append(root.val)                if root.right is not None:                    stack.append(root.right)                if root.left is not None:                    stack.append(root.left)                return output\n递归123456789101112131415class Solution:    def preorderTraversal(self, root):        &quot;&quot;&quot;        :type root: TreeNode        :rtype: List[int]        &quot;&quot;&quot;        res = []        self.dfs(root, res)        return res    def dfs(self, root, res):        if root:            res.append(root.val)            self.dfs(root.left, res)            self.dfs(root.right, res)\n时间复杂度：O(n)\n空间复杂度：O(n)\n","dateCreated":"2016-03-20T23:15:02+08:00","dateModified":"2019-02-12T19:22:22+08:00","datePublished":"2016-03-20T23:15:02+08:00","description":"Given a binary tree, return the preorder traversal of its nodes’ values.","headline":"144. Binary Tree Preorder Traversal","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://salmons.info/2016/03/20/lc144/"},"publisher":{"@type":"Organization","name":"Salmons","sameAs":[],"image":"favicon.ico","logo":{"@type":"ImageObject","url":"favicon.ico"}},"url":"http://salmons.info/2016/03/20/lc144/","keywords":"LeetCode, BinaryTree"}</script>
+    <meta name="description" content="Given a binary tree, return the preorder traversal of its nodes’ values.">
+<meta name="keywords" content="LeetCode,BinaryTree">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="61. Rotate List">
-<meta property="og:url" content="http://salmons.info/2016/03/19/lc61/index.html">
+<meta property="og:title" content="144. Binary Tree Preorder Traversal">
+<meta property="og:url" content="http://salmons.info/2016/03/20/lc144/index.html">
 <meta property="og:site_name" content="Salmons&#39;s Pool">
-<meta property="og:description" content="Given a linked list, rotate the list to the right by k places, where k is non-negative.">
+<meta property="og:description" content="Given a binary tree, return the preorder traversal of its nodes’ values.">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2019-01-31T07:06:50.259Z">
+<meta property="og:updated_time" content="2019-02-12T11:22:22.625Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="61. Rotate List">
-<meta name="twitter:description" content="Given a linked list, rotate the list to the right by k places, where k is non-negative.">
+<meta name="twitter:title" content="144. Binary Tree Preorder Traversal">
+<meta name="twitter:description" content="Given a binary tree, return the preorder traversal of its nodes’ values.">
     
     
         
@@ -189,14 +189,14 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title">
-            61. Rotate List
+            144. Binary Tree Preorder Traversal
         </h1>
     
     
         <div class="post-meta">
-    <time datetime="2016-03-19T23:15:02+08:00">
+    <time datetime="2016-03-20T23:15:02+08:00">
 	
-		    3月 19, 2016
+		    3月 20, 2016
     	
     </time>
     
@@ -214,14 +214,21 @@
     
     <div class="post-content markdown">
         <div class="main-content-wrap">
-            <p>Given a linked list, rotate the list to the right by k places, where k is non-negative.<br><a id="more"></a></p>
+            <p>Given a binary tree, return the preorder traversal of its nodes’ values.</p>
+<a id="more"></a>
 <p>Example:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL, k = 2</span><br><span class="line">Output: 4-&gt;5-&gt;1-&gt;2-&gt;3-&gt;NULL</span><br><span class="line">Explanation:</span><br><span class="line">rotate 1 steps to the right: 5-&gt;1-&gt;2-&gt;3-&gt;4-&gt;NULL</span><br><span class="line">rotate 2 steps to the right: 4-&gt;5-&gt;1-&gt;2-&gt;3-&gt;NULL</span><br></pre></td></tr></table></figure>
-<h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>旋转链表k步</p>
-<h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>先遍历整个链表获得链表长度n，然后此时把链表头和尾链接起来，在往后走n - k % n个节点就到达新链表的头结点前一个点，这时断开链表即可</p>
-<h4 id="C代码："><a href="#C代码：" class="headerlink" title="C代码："></a>C代码：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">struct ListNode* rotateRight(struct ListNode* head, int k) &#123;</span><br><span class="line">    if(!head) &#123;</span><br><span class="line">        return NULL;</span><br><span class="line">    &#125;</span><br><span class="line">    int len = 1;</span><br><span class="line">    struct ListNode *cur = head;</span><br><span class="line">    while (cur-&gt;next) &#123;</span><br><span class="line">        cur = cur-&gt;next;</span><br><span class="line">        len++;</span><br><span class="line">    &#125;</span><br><span class="line">    cur-&gt;next = head;</span><br><span class="line">    k %= len;</span><br><span class="line">    for (int i = 0; i &lt; len - k; i++) &#123;</span><br><span class="line">        cur = cur-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    struct ListNode *new = cur-&gt;next;</span><br><span class="line">    cur-&gt;next = NULL;</span><br><span class="line">    return new;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Input: [1,null,2,3]</span><br><span class="line">   1</span><br><span class="line">    \</span><br><span class="line">     2</span><br><span class="line">    /</span><br><span class="line">   3</span><br><span class="line"></span><br><span class="line">Output: [1,2,3]</span><br></pre></td></tr></table></figure>
+<h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>前序遍历</p>
+<h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><ul>
+<li><p>遍历：利用了stack数据结构，root先入栈，遍历stack，每次取出栈顶，加入输出，栈顶元素right有值就入栈，栈顶元素left有值就入栈，保证了根-左-右的顺序</p>
+</li>
+<li><p>递归</p>
+</li>
+</ul>
+<h4 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a>Python代码：</h4><h4 id="遍历"><a href="#遍历" class="headerlink" title="遍历"></a>遍历</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def preorderTraversal(self, root):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type root: TreeNode</span><br><span class="line">        :rtype: List[int]</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        if root is None:</span><br><span class="line">            return []</span><br><span class="line">        </span><br><span class="line">        stack, output = [root, ], []</span><br><span class="line">        </span><br><span class="line">        while stack:</span><br><span class="line">            root = stack.pop()</span><br><span class="line">            if root is not None:</span><br><span class="line">                output.append(root.val)</span><br><span class="line">                if root.right is not None:</span><br><span class="line">                    stack.append(root.right)</span><br><span class="line">                if root.left is not None:</span><br><span class="line">                    stack.append(root.left)</span><br><span class="line">        </span><br><span class="line">        return output</span><br></pre></td></tr></table></figure>
+<h4 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def preorderTraversal(self, root):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type root: TreeNode</span><br><span class="line">        :rtype: List[int]</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        res = []</span><br><span class="line">        self.dfs(root, res)</span><br><span class="line">        return res</span><br><span class="line"></span><br><span class="line">    def dfs(self, root, res):</span><br><span class="line">        if root:</span><br><span class="line">            res.append(root.val)</span><br><span class="line">            self.dfs(root.left, res)</span><br><span class="line">            self.dfs(root.right, res)</span><br></pre></td></tr></table></figure>
 <p>时间复杂度：O(n)</p>
-<p>空间复杂度：O(1)</p>
+<p>空间复杂度：O(n)</p>
 
             
 
@@ -232,7 +239,7 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">标签</span><br>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/LeetCode/">LeetCode</a> <a class="tag tag--primary tag--small t-link" href="/tags/LinkedList/">LinkedList</a>
+    <a class="tag tag--primary tag--small t-link" href="/tags/BinaryTree/">BinaryTree</a> <a class="tag tag--primary tag--small t-link" href="/tags/LeetCode/">LeetCode</a>
 
             </div>
         
@@ -243,7 +250,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/20/lc144/" data-tooltip="144. Binary Tree Preorder Traversal" aria-label="上一篇: 144. Binary Tree Preorder Traversal">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/21/lc94/" data-tooltip="94. Binary Tree Inorder Traversal" aria-label="上一篇: 94. Binary Tree Inorder Traversal">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -252,7 +259,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/18/lc21/" data-tooltip="21. Merge Two Sorted Lists" aria-label="下一篇: 21. Merge Two Sorted Lists">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/19/lc61/" data-tooltip="61. Rotate List" aria-label="下一篇: 61. Rotate List">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -315,7 +322,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/20/lc144/" data-tooltip="144. Binary Tree Preorder Traversal" aria-label="上一篇: 144. Binary Tree Preorder Traversal">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/21/lc94/" data-tooltip="94. Binary Tree Inorder Traversal" aria-label="上一篇: 94. Binary Tree Inorder Traversal">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -324,7 +331,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/18/lc21/" data-tooltip="21. Merge Two Sorted Lists" aria-label="下一篇: 21. Merge Two Sorted Lists">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/19/lc61/" data-tooltip="61. Rotate List" aria-label="下一篇: 61. Rotate List">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -417,9 +424,9 @@
     
         <script>
              var disqus_config = function () {
-                 this.page.url = 'http://salmons.info/2016/03/19/lc61/';
+                 this.page.url = 'http://salmons.info/2016/03/20/lc144/';
                  
-                    this.page.identifier = '2016/03/19/lc61/';
+                    this.page.identifier = '2016/03/20/lc144/';
                  
              };
             (function() {
