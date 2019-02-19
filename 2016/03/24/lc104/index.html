@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Salmons&#39;s Pool">
-    <title>102. Binary Tree Level Order Traversal - Salmons&#39;s Pool</title>
+    <title>104. Maximum Depth of Binary Tree - Salmons&#39;s Pool</title>
     <meta name="author" content="Salmons">
     
     
@@ -15,19 +15,19 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Salmons","sameAs":[],"image":"favicon.ico"},"articleBody":"Given a binary tree, return the level order traversal of its nodes’ values. (ie, from left to right, level by level).\n\nExample:\nGiven binary tree [3,9,20,null,null,15,7],\n12345  3 / \\9  20  /  \\ 15   7\nreturn its level order traversal as:\n12345[  [3],  [9,20],  [15,7]]\n题意：层次遍历，返回数据为二维数组\n思路：返回的是二维数组，用到了队列数据结构，队列元素保存了(node, level), 节点和层级，遍历出队列，如果当前的层级是第一次出现，就存入level对应的list，left入队列，right入队列\nPython代码：遍历12345678910111213141516171819202122class Solution:    def levelOrder(self, root):        &quot;&quot;&quot;        :type root: TreeNode        :rtype: List[List[int]]        &quot;&quot;&quot;        from collections import deque        node_queue = deque()        node_queue.append((root, 0))        res, res_set = [], set()        while node_queue:            node, level = node_queue.popleft()            if node:                if level not in res_set:                    res_set.add(level)                    res.append([])                res[level].append(node.val)                node_queue.append((node.left, level + 1))                node_queue.append((node.right, level + 1))        return res\n时间复杂度：O(n)\n空间复杂度：O(n)\n","dateCreated":"2016-03-23T23:15:02+08:00","dateModified":"2019-02-12T19:32:35+08:00","datePublished":"2016-03-23T23:15:02+08:00","description":"Given a binary tree, return the level order traversal of its nodes’ values. (ie, from left to right, level by level).","headline":"102. Binary Tree Level Order Traversal","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://salmons.info/2016/03/23/lc102/"},"publisher":{"@type":"Organization","name":"Salmons","sameAs":[],"image":"favicon.ico","logo":{"@type":"ImageObject","url":"favicon.ico"}},"url":"http://salmons.info/2016/03/23/lc102/","keywords":"LeetCode, BinaryTree"}</script>
-    <meta name="description" content="Given a binary tree, return the level order traversal of its nodes’ values. (ie, from left to right, level by level).">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Salmons","sameAs":[],"image":"favicon.ico"},"articleBody":"Given a binary tree, find its maximum depth.The maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.\nNote: A leaf is a node with no children.\nExample:\nGiven binary tree [3,9,20,null,null,15,7],\n12345  3 / \\9  20  /  \\ 15   7\nreturn its depth = 3.\n题意：二叉树深度计算\n思路：DFS 用了递归BFS 用了队列\nC++代码：递归1234567class Solution &#123;public:    int maxDepth(TreeNode* root) &#123;        if(!root) return 0;        return 1 + max(maxDepth(root-&gt;left), maxDepth(root-&gt;right));    &#125;&#125;;\n时间复杂度：O(n)\n空间复杂度：O(1)\n队列1234567891011121314151617class Solution &#123;public:    int maxDepth(TreeNode* root) &#123;        if (!root) return 0;        int res = 0;        queue&lt;TreeNode*&gt; q&#123;&#123;root&#125;&#125;;        while (!q.empty()) &#123;            ++res;            for (int i = q.size(); i &gt; 0; --i) &#123;                TreeNode *t = q.front(); q.pop();                if (t-&gt;left) q.push(t-&gt;left);                if (t-&gt;right) q.push(t-&gt;right);            &#125;        &#125;        return res;    &#125;&#125;;\n时间复杂度：O(n)\n空间复杂度：O(n)\n","dateCreated":"2016-03-24T23:15:02+08:00","dateModified":"2019-02-19T11:11:06+08:00","datePublished":"2016-03-24T23:15:02+08:00","description":"Given a binary tree, find its maximum depth.","headline":"104. Maximum Depth of Binary Tree","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://salmons.info/2016/03/24/lc104/"},"publisher":{"@type":"Organization","name":"Salmons","sameAs":[],"image":"favicon.ico","logo":{"@type":"ImageObject","url":"favicon.ico"}},"url":"http://salmons.info/2016/03/24/lc104/","keywords":"LeetCode, BinaryTree"}</script>
+    <meta name="description" content="Given a binary tree, find its maximum depth.">
 <meta name="keywords" content="LeetCode,BinaryTree">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="102. Binary Tree Level Order Traversal">
-<meta property="og:url" content="http://salmons.info/2016/03/23/lc102/index.html">
+<meta property="og:title" content="104. Maximum Depth of Binary Tree">
+<meta property="og:url" content="http://salmons.info/2016/03/24/lc104/index.html">
 <meta property="og:site_name" content="Salmons&#39;s Pool">
-<meta property="og:description" content="Given a binary tree, return the level order traversal of its nodes’ values. (ie, from left to right, level by level).">
+<meta property="og:description" content="Given a binary tree, find its maximum depth.">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2019-02-12T11:32:35.554Z">
+<meta property="og:updated_time" content="2019-02-19T03:11:06.580Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="102. Binary Tree Level Order Traversal">
-<meta name="twitter:description" content="Given a binary tree, return the level order traversal of its nodes’ values. (ie, from left to right, level by level).">
+<meta name="twitter:title" content="104. Maximum Depth of Binary Tree">
+<meta name="twitter:description" content="Given a binary tree, find its maximum depth.">
     
     
         
@@ -189,14 +189,14 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title">
-            102. Binary Tree Level Order Traversal
+            104. Maximum Depth of Binary Tree
         </h1>
     
     
         <div class="post-meta">
-    <time datetime="2016-03-23T23:15:02+08:00">
+    <time datetime="2016-03-24T23:15:02+08:00">
 	
-		    3月 23, 2016
+		    3月 24, 2016
     	
     </time>
     
@@ -214,16 +214,18 @@
     
     <div class="post-content markdown">
         <div class="main-content-wrap">
-            <p>Given a binary tree, return the level order traversal of its nodes’ values. (ie, from left to right, level by level).</p>
-<a id="more"></a>
+            <p>Given a binary tree, find its maximum depth.<br><a id="more"></a><br>The maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.</p>
+<p><strong>Note:</strong> A leaf is a node with no children.</p>
 <p>Example:</p>
 <p>Given binary tree [3,9,20,null,null,15,7],</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">  3</span><br><span class="line"> / \</span><br><span class="line">9  20</span><br><span class="line">  /  \</span><br><span class="line"> 15   7</span><br></pre></td></tr></table></figure>
-<p>return its level order traversal as:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  [3],</span><br><span class="line">  [9,20],</span><br><span class="line">  [15,7]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
-<h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>层次遍历，返回数据为二维数组</p>
-<h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>返回的是二维数组，用到了队列数据结构，队列元素保存了(node, level), 节点和层级，遍历出队列，<br>如果当前的层级是第一次出现，就存入level对应的list，left入队列，right入队列</p>
-<h4 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a>Python代码：</h4><h4 id="遍历"><a href="#遍历" class="headerlink" title="遍历"></a>遍历</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def levelOrder(self, root):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        :type root: TreeNode</span><br><span class="line">        :rtype: List[List[int]]</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        from collections import deque</span><br><span class="line">        node_queue = deque()</span><br><span class="line">        node_queue.append((root, 0))</span><br><span class="line"></span><br><span class="line">        res, res_set = [], set()</span><br><span class="line"></span><br><span class="line">        while node_queue:</span><br><span class="line">            node, level = node_queue.popleft()</span><br><span class="line">            if node:</span><br><span class="line">                if level not in res_set:</span><br><span class="line">                    res_set.add(level)</span><br><span class="line">                    res.append([])</span><br><span class="line">                res[level].append(node.val)</span><br><span class="line">                node_queue.append((node.left, level + 1))</span><br><span class="line">                node_queue.append((node.right, level + 1))</span><br><span class="line">        return res</span><br></pre></td></tr></table></figure>
+<p>return its depth = 3.</p>
+<h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>二叉树深度计算</p>
+<h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>DFS 用了递归<br>BFS 用了队列</p>
+<h4 id="C-代码："><a href="#C-代码：" class="headerlink" title="C++代码："></a>C++代码：</h4><h4 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int maxDepth(TreeNode* root) &#123;</span><br><span class="line">        if(!root) return 0;</span><br><span class="line">        return 1 + max(maxDepth(root-&gt;left), maxDepth(root-&gt;right));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>时间复杂度：O(n)</p>
+<p>空间复杂度：O(1)</p>
+<h4 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int maxDepth(TreeNode* root) &#123;</span><br><span class="line">        if (!root) return 0;</span><br><span class="line">        int res = 0;</span><br><span class="line">        queue&lt;TreeNode*&gt; q&#123;&#123;root&#125;&#125;;</span><br><span class="line">        while (!q.empty()) &#123;</span><br><span class="line">            ++res;</span><br><span class="line">            for (int i = q.size(); i &gt; 0; --i) &#123;</span><br><span class="line">                TreeNode *t = q.front(); q.pop();</span><br><span class="line">                if (t-&gt;left) q.push(t-&gt;left);</span><br><span class="line">                if (t-&gt;right) q.push(t-&gt;right);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>时间复杂度：O(n)</p>
 <p>空间复杂度：O(n)</p>
 
@@ -247,7 +249,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/24/lc104/" data-tooltip="104. Maximum Depth of Binary Tree" aria-label="上一篇: 104. Maximum Depth of Binary Tree">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/10/21/淘宝选择规格动画效果/" data-tooltip="淘宝选择规格动画效果" aria-label="上一篇: 淘宝选择规格动画效果">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -256,7 +258,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/22/lc145/" data-tooltip="145. Binary Tree Postorder Traversal" aria-label="下一篇: 145. Binary Tree Postorder Traversal">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/23/lc102/" data-tooltip="102. Binary Tree Level Order Traversal" aria-label="下一篇: 102. Binary Tree Level Order Traversal">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -319,7 +321,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/24/lc104/" data-tooltip="104. Maximum Depth of Binary Tree" aria-label="上一篇: 104. Maximum Depth of Binary Tree">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/10/21/淘宝选择规格动画效果/" data-tooltip="淘宝选择规格动画效果" aria-label="上一篇: 淘宝选择规格动画效果">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -328,7 +330,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/22/lc145/" data-tooltip="145. Binary Tree Postorder Traversal" aria-label="下一篇: 145. Binary Tree Postorder Traversal">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/23/lc102/" data-tooltip="102. Binary Tree Level Order Traversal" aria-label="下一篇: 102. Binary Tree Level Order Traversal">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -421,9 +423,9 @@
     
         <script>
              var disqus_config = function () {
-                 this.page.url = 'http://salmons.info/2016/03/23/lc102/';
+                 this.page.url = 'http://salmons.info/2016/03/24/lc104/';
                  
-                    this.page.identifier = '2016/03/23/lc102/';
+                    this.page.identifier = '2016/03/24/lc104/';
                  
              };
             (function() {
