@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Salmons&#39;s Pool">
-    <title>104. Maximum Depth of Binary Tree - Salmons&#39;s Pool</title>
+    <title>101. Symmetric Tree - Salmons&#39;s Pool</title>
     <meta name="author" content="Salmons">
     
     
@@ -15,19 +15,19 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Salmons","sameAs":[],"image":"favicon.ico"},"articleBody":"Given a binary tree, find its maximum depth.The maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.\nNote: A leaf is a node with no children.\nExample:\nGiven binary tree [3,9,20,null,null,15,7],\n12345  3 / \\9  20  /  \\ 15   7\nreturn its depth = 3.\n题意：二叉树深度计算\n思路：DFS 用了递归BFS 用了队列\nC++代码：递归1234567class Solution &#123;public:    int maxDepth(TreeNode* root) &#123;        if(!root) return 0;        return 1 + max(maxDepth(root-&gt;left), maxDepth(root-&gt;right));    &#125;&#125;;\n队列1234567891011121314151617class Solution &#123;public:    int maxDepth(TreeNode* root) &#123;        if (!root) return 0;        int res = 0;        queue&lt;TreeNode*&gt; q&#123;&#123;root&#125;&#125;;        while (!q.empty()) &#123;            ++res;            for (int i = q.size(); i &gt; 0; --i) &#123;                TreeNode *t = q.front(); q.pop();                if (t-&gt;left) q.push(t-&gt;left);                if (t-&gt;right) q.push(t-&gt;right);            &#125;        &#125;        return res;    &#125;&#125;;\n时间复杂度：O(n)\n空间复杂度：O(n)\n","dateCreated":"2016-03-24T23:15:02+08:00","dateModified":"2019-02-20T17:34:42+08:00","datePublished":"2016-03-24T23:15:02+08:00","description":"Given a binary tree, find its maximum depth.","headline":"104. Maximum Depth of Binary Tree","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://salmons.info/2016/03/24/lc104/"},"publisher":{"@type":"Organization","name":"Salmons","sameAs":[],"image":"favicon.ico","logo":{"@type":"ImageObject","url":"favicon.ico"}},"url":"http://salmons.info/2016/03/24/lc104/","keywords":"LeetCode, BinaryTree"}</script>
-    <meta name="description" content="Given a binary tree, find its maximum depth.">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Salmons","sameAs":[],"image":"favicon.ico"},"articleBody":"Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).\n\nFor example, this binary tree [1,2,2,3,4,4,3] is symmetric:\n12345    1   / \\  2   2 / \\ / \\3  4 4  3\nBut the following [1,2,2,null,3,null,3] is not:\n12345  1 / \\2   2 \\   \\ 3    3\n题意：判断二叉树的对称性\n思路：用递归和遍历\n遍历用到了队列\nC++代码：递归12345678910111213class Solution &#123;public:    bool isSymmetric(TreeNode* root) &#123;                if (!root) return true;        return isSymmetric(root-&gt;left, root-&gt;right);    &#125;    bool isSymmetric(TreeNode *left, TreeNode *right) &#123;        if (!left &amp;&amp; !right) return true;        if (left &amp;&amp; !right || !left &amp;&amp; right || left-&gt;val != right-&gt;val) return false;        return isSymmetric(left-&gt;left, right-&gt;right) &amp;&amp; isSymmetric(left-&gt;right, right-&gt;left);    &#125;&#125;;\n队列1234567891011121314151617181920212223class Solution &#123;public:    bool isSymmetric(TreeNode* root) &#123;                if (!root) return true;        queue&lt;TreeNode*&gt; q;        q.push(root);        q.push(root);        while (!q.empty()) &#123;            TreeNode *node1 = q.front(); q.pop();            TreeNode *node2 = q.front(); q.pop();            if (!node1 &amp;&amp; !node2) continue;            if((node1 &amp;&amp; !node2) || (!node1 &amp;&amp; node2)) return false;            if (node1-&gt;val != node2-&gt;val) return false;            q.push(node1-&gt;left);            q.push(node2-&gt;right);            q.push(node1-&gt;right);            q.push(node2-&gt;left);        &#125;        return true;    &#125;&#125;;\n时间复杂度：O(n)\n空间复杂度：O(n)\n","dateCreated":"2016-03-25T23:15:02+08:00","dateModified":"2019-02-20T19:30:03+08:00","datePublished":"2016-03-25T23:15:02+08:00","description":"Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).","headline":"101. Symmetric Tree","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://salmons.info/2016/03/25/lc101/"},"publisher":{"@type":"Organization","name":"Salmons","sameAs":[],"image":"favicon.ico","logo":{"@type":"ImageObject","url":"favicon.ico"}},"url":"http://salmons.info/2016/03/25/lc101/","keywords":"LeetCode, BinaryTree"}</script>
+    <meta name="description" content="Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).">
 <meta name="keywords" content="LeetCode,BinaryTree">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="104. Maximum Depth of Binary Tree">
-<meta property="og:url" content="http://salmons.info/2016/03/24/lc104/index.html">
+<meta property="og:title" content="101. Symmetric Tree">
+<meta property="og:url" content="http://salmons.info/2016/03/25/lc101/index.html">
 <meta property="og:site_name" content="Salmons&#39;s Pool">
-<meta property="og:description" content="Given a binary tree, find its maximum depth.">
+<meta property="og:description" content="Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2019-02-20T09:34:42.213Z">
+<meta property="og:updated_time" content="2019-02-20T11:30:03.359Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="104. Maximum Depth of Binary Tree">
-<meta name="twitter:description" content="Given a binary tree, find its maximum depth.">
+<meta name="twitter:title" content="101. Symmetric Tree">
+<meta name="twitter:description" content="Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).">
     
     
         
@@ -189,14 +189,14 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title">
-            104. Maximum Depth of Binary Tree
+            101. Symmetric Tree
         </h1>
     
     
         <div class="post-meta">
-    <time datetime="2016-03-24T23:15:02+08:00">
+    <time datetime="2016-03-25T23:15:02+08:00">
 	
-		    3月 24, 2016
+		    3月 25, 2016
     	
     </time>
     
@@ -214,16 +214,17 @@
     
     <div class="post-content markdown">
         <div class="main-content-wrap">
-            <p>Given a binary tree, find its maximum depth.<br><a id="more"></a><br>The maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.</p>
-<p><strong>Note:</strong> A leaf is a node with no children.</p>
-<p>Example:</p>
-<p>Given binary tree [3,9,20,null,null,15,7],</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">  3</span><br><span class="line"> / \</span><br><span class="line">9  20</span><br><span class="line">  /  \</span><br><span class="line"> 15   7</span><br></pre></td></tr></table></figure>
-<p>return its depth = 3.</p>
-<h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>二叉树深度计算</p>
-<h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>DFS 用了递归<br>BFS 用了队列</p>
-<h4 id="C-代码："><a href="#C-代码：" class="headerlink" title="C++代码："></a>C++代码：</h4><h4 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int maxDepth(TreeNode* root) &#123;</span><br><span class="line">        if(!root) return 0;</span><br><span class="line">        return 1 + max(maxDepth(root-&gt;left), maxDepth(root-&gt;right));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h4 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int maxDepth(TreeNode* root) &#123;</span><br><span class="line">        if (!root) return 0;</span><br><span class="line">        int res = 0;</span><br><span class="line">        queue&lt;TreeNode*&gt; q&#123;&#123;root&#125;&#125;;</span><br><span class="line">        while (!q.empty()) &#123;</span><br><span class="line">            ++res;</span><br><span class="line">            for (int i = q.size(); i &gt; 0; --i) &#123;</span><br><span class="line">                TreeNode *t = q.front(); q.pop();</span><br><span class="line">                if (t-&gt;left) q.push(t-&gt;left);</span><br><span class="line">                if (t-&gt;right) q.push(t-&gt;right);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+            <p>Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).</p>
+<a id="more"></a>
+<p>For example, this binary tree [1,2,2,3,4,4,3] is symmetric:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">    1</span><br><span class="line">   / \</span><br><span class="line">  2   2</span><br><span class="line"> / \ / \</span><br><span class="line">3  4 4  3</span><br></pre></td></tr></table></figure>
+<p>But the following [1,2,2,null,3,null,3] is not:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">  1</span><br><span class="line"> / \</span><br><span class="line">2   2</span><br><span class="line"> \   \</span><br><span class="line"> 3    3</span><br></pre></td></tr></table></figure>
+<h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>判断二叉树的对称性</p>
+<h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>用递归和遍历</p>
+<p>遍历用到了队列</p>
+<h4 id="C-代码："><a href="#C-代码：" class="headerlink" title="C++代码："></a>C++代码：</h4><h4 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool isSymmetric(TreeNode* root) &#123;</span><br><span class="line">        </span><br><span class="line">        if (!root) return true;</span><br><span class="line">        return isSymmetric(root-&gt;left, root-&gt;right);</span><br><span class="line">    &#125;</span><br><span class="line">    bool isSymmetric(TreeNode *left, TreeNode *right) &#123;</span><br><span class="line">        if (!left &amp;&amp; !right) return true;</span><br><span class="line">        if (left &amp;&amp; !right || !left &amp;&amp; right || left-&gt;val != right-&gt;val) return false;</span><br><span class="line">        return isSymmetric(left-&gt;left, right-&gt;right) &amp;&amp; isSymmetric(left-&gt;right, right-&gt;left);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool isSymmetric(TreeNode* root) &#123;</span><br><span class="line">        </span><br><span class="line">        if (!root) return true;</span><br><span class="line">        queue&lt;TreeNode*&gt; q;</span><br><span class="line">        q.push(root);</span><br><span class="line">        q.push(root);</span><br><span class="line">        while (!q.empty()) &#123;</span><br><span class="line">            TreeNode *node1 = q.front(); q.pop();</span><br><span class="line">            TreeNode *node2 = q.front(); q.pop();</span><br><span class="line">            if (!node1 &amp;&amp; !node2) continue;</span><br><span class="line">            if((node1 &amp;&amp; !node2) || (!node1 &amp;&amp; node2)) return false;</span><br><span class="line">            if (node1-&gt;val != node2-&gt;val) return false;</span><br><span class="line">            q.push(node1-&gt;left);</span><br><span class="line">            q.push(node2-&gt;right);</span><br><span class="line">            q.push(node1-&gt;right);</span><br><span class="line">            q.push(node2-&gt;left);</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>时间复杂度：O(n)</p>
 <p>空间复杂度：O(n)</p>
 
@@ -247,7 +248,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/25/lc101/" data-tooltip="101. Symmetric Tree" aria-label="上一篇: 101. Symmetric Tree">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/10/21/淘宝选择规格动画效果/" data-tooltip="淘宝选择规格动画效果" aria-label="上一篇: 淘宝选择规格动画效果">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -256,7 +257,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/23/lc102/" data-tooltip="102. Binary Tree Level Order Traversal" aria-label="下一篇: 102. Binary Tree Level Order Traversal">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/24/lc104/" data-tooltip="104. Maximum Depth of Binary Tree" aria-label="下一篇: 104. Maximum Depth of Binary Tree">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -319,7 +320,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/25/lc101/" data-tooltip="101. Symmetric Tree" aria-label="上一篇: 101. Symmetric Tree">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/10/21/淘宝选择规格动画效果/" data-tooltip="淘宝选择规格动画效果" aria-label="上一篇: 淘宝选择规格动画效果">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -328,7 +329,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/23/lc102/" data-tooltip="102. Binary Tree Level Order Traversal" aria-label="下一篇: 102. Binary Tree Level Order Traversal">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/24/lc104/" data-tooltip="104. Maximum Depth of Binary Tree" aria-label="下一篇: 104. Maximum Depth of Binary Tree">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -421,9 +422,9 @@
     
         <script>
              var disqus_config = function () {
-                 this.page.url = 'http://salmons.info/2016/03/24/lc104/';
+                 this.page.url = 'http://salmons.info/2016/03/25/lc101/';
                  
-                    this.page.identifier = '2016/03/24/lc104/';
+                    this.page.identifier = '2016/03/25/lc101/';
                  
              };
             (function() {
