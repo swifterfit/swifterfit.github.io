@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Salmons&#39;s Pool">
-    <title>101. Symmetric Tree - Salmons&#39;s Pool</title>
+    <title>112. Path Sum - Salmons&#39;s Pool</title>
     <meta name="author" content="Salmons">
     
     
@@ -15,19 +15,19 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Salmons","sameAs":[],"image":"favicon.ico"},"articleBody":"Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).\n\nFor example, this binary tree [1,2,2,3,4,4,3] is symmetric:\n12345    1   / \\  2   2 / \\ / \\3  4 4  3\nBut the following [1,2,2,null,3,null,3] is not:\n12345  1 / \\2   2 \\   \\ 3    3\n题意：判断二叉树的对称性\n思路：用递归和遍历\n遍历用到了队列\nC++代码：递归12345678910111213class Solution &#123;public:    bool isSymmetric(TreeNode* root) &#123;                if (!root) return true;        return isSymmetric(root-&gt;left, root-&gt;right);    &#125;    bool isSymmetric(TreeNode *left, TreeNode *right) &#123;        if (!left &amp;&amp; !right) return true;        if (left &amp;&amp; !right || !left &amp;&amp; right || left-&gt;val != right-&gt;val) return false;        return isSymmetric(left-&gt;left, right-&gt;right) &amp;&amp; isSymmetric(left-&gt;right, right-&gt;left);    &#125;&#125;;\n队列1234567891011121314151617181920212223class Solution &#123;public:    bool isSymmetric(TreeNode* root) &#123;                if (!root) return true;        queue&lt;TreeNode*&gt; q;        q.push(root);        q.push(root);        while (!q.empty()) &#123;            TreeNode *node1 = q.front(); q.pop();            TreeNode *node2 = q.front(); q.pop();            if (!node1 &amp;&amp; !node2) continue;            if((node1 &amp;&amp; !node2) || (!node1 &amp;&amp; node2)) return false;            if (node1-&gt;val != node2-&gt;val) return false;            q.push(node1-&gt;left);            q.push(node2-&gt;right);            q.push(node1-&gt;right);            q.push(node2-&gt;left);        &#125;        return true;    &#125;&#125;;\n时间复杂度：O(n)\n空间复杂度：O(n)\n","dateCreated":"2016-03-25T23:15:02+08:00","dateModified":"2019-02-20T19:30:03+08:00","datePublished":"2016-03-25T23:15:02+08:00","description":"Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).","headline":"101. Symmetric Tree","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://salmons.info/2016/03/25/lc101/"},"publisher":{"@type":"Organization","name":"Salmons","sameAs":[],"image":"favicon.ico","logo":{"@type":"ImageObject","url":"favicon.ico"}},"url":"http://salmons.info/2016/03/25/lc101/","keywords":"LeetCode, BinaryTree"}</script>
-    <meta name="description" content="Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Salmons","sameAs":[],"image":"favicon.ico"},"articleBody":"Given a binary tree and a sum, determine if the tree has a root-to-leaf path such that adding up all the values along the path equals the given sum.\n\nGiven the below binary tree and sum = 22,\n1234567      5     / \\    4   8   /   / \\  11  13  4 /  \\      \\7    2      1\nreturn true, as there exist a root-to-leaf path 5-&gt;4-&gt;11-&gt;2 which sum is 22.\n题意：判断是否存在根节点到叶子节点的路径和等于给定sum值\n思路：用深度优先算法DFS的思想来遍历每一条完整的路径，也就是利用递归不停找子节点的左右子节点\nC++代码：递归12345678class Solution &#123;public:    bool hasPathSum(TreeNode* root, int sum) &#123;        if (!root) return false;        if (!root-&gt;left &amp;&amp; !root-&gt;right &amp;&amp; root-&gt;val == sum ) return true;        return hasPathSum(root-&gt;left, sum - root-&gt;val) || hasPathSum(root-&gt;right, sum - root-&gt;val);    &#125;&#125;;\n时间复杂度：O(n)\n空间复杂度：O(n)\n","dateCreated":"2016-03-26T23:15:02+08:00","dateModified":"2019-02-26T10:41:40+08:00","datePublished":"2016-03-26T23:15:02+08:00","description":"Given a binary tree and a sum, determine if the tree has a root-to-leaf path such that adding up all the values along the path equals the given sum.","headline":"112. Path Sum","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://salmons.info/2016/03/26/lc112/"},"publisher":{"@type":"Organization","name":"Salmons","sameAs":[],"image":"favicon.ico","logo":{"@type":"ImageObject","url":"favicon.ico"}},"url":"http://salmons.info/2016/03/26/lc112/","keywords":"LeetCode, BinaryTree"}</script>
+    <meta name="description" content="Given a binary tree and a sum, determine if the tree has a root-to-leaf path such that adding up all the values along the path equals the given sum.">
 <meta name="keywords" content="LeetCode,BinaryTree">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="101. Symmetric Tree">
-<meta property="og:url" content="http://salmons.info/2016/03/25/lc101/index.html">
+<meta property="og:title" content="112. Path Sum">
+<meta property="og:url" content="http://salmons.info/2016/03/26/lc112/index.html">
 <meta property="og:site_name" content="Salmons&#39;s Pool">
-<meta property="og:description" content="Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).">
+<meta property="og:description" content="Given a binary tree and a sum, determine if the tree has a root-to-leaf path such that adding up all the values along the path equals the given sum.">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2019-02-20T11:30:03.359Z">
+<meta property="og:updated_time" content="2019-02-26T02:41:40.639Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="101. Symmetric Tree">
-<meta name="twitter:description" content="Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).">
+<meta name="twitter:title" content="112. Path Sum">
+<meta name="twitter:description" content="Given a binary tree and a sum, determine if the tree has a root-to-leaf path such that adding up all the values along the path equals the given sum.">
     
     
         
@@ -189,14 +189,14 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title">
-            101. Symmetric Tree
+            112. Path Sum
         </h1>
     
     
         <div class="post-meta">
-    <time datetime="2016-03-25T23:15:02+08:00">
+    <time datetime="2016-03-26T23:15:02+08:00">
 	
-		    3月 25, 2016
+		    3月 26, 2016
     	
     </time>
     
@@ -214,17 +214,14 @@
     
     <div class="post-content markdown">
         <div class="main-content-wrap">
-            <p>Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).</p>
+            <p>Given a binary tree and a sum, determine if the tree has a root-to-leaf path such that adding up all the values along the path equals the given sum.</p>
 <a id="more"></a>
-<p>For example, this binary tree [1,2,2,3,4,4,3] is symmetric:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">    1</span><br><span class="line">   / \</span><br><span class="line">  2   2</span><br><span class="line"> / \ / \</span><br><span class="line">3  4 4  3</span><br></pre></td></tr></table></figure>
-<p>But the following [1,2,2,null,3,null,3] is not:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">  1</span><br><span class="line"> / \</span><br><span class="line">2   2</span><br><span class="line"> \   \</span><br><span class="line"> 3    3</span><br></pre></td></tr></table></figure>
-<h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>判断二叉树的对称性</p>
-<h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>用递归和遍历</p>
-<p>遍历用到了队列</p>
-<h4 id="C-代码："><a href="#C-代码：" class="headerlink" title="C++代码："></a>C++代码：</h4><h4 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool isSymmetric(TreeNode* root) &#123;</span><br><span class="line">        </span><br><span class="line">        if (!root) return true;</span><br><span class="line">        return isSymmetric(root-&gt;left, root-&gt;right);</span><br><span class="line">    &#125;</span><br><span class="line">    bool isSymmetric(TreeNode *left, TreeNode *right) &#123;</span><br><span class="line">        if (!left &amp;&amp; !right) return true;</span><br><span class="line">        if (left &amp;&amp; !right || !left &amp;&amp; right || left-&gt;val != right-&gt;val) return false;</span><br><span class="line">        return isSymmetric(left-&gt;left, right-&gt;right) &amp;&amp; isSymmetric(left-&gt;right, right-&gt;left);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h4 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool isSymmetric(TreeNode* root) &#123;</span><br><span class="line">        </span><br><span class="line">        if (!root) return true;</span><br><span class="line">        queue&lt;TreeNode*&gt; q;</span><br><span class="line">        q.push(root);</span><br><span class="line">        q.push(root);</span><br><span class="line">        while (!q.empty()) &#123;</span><br><span class="line">            TreeNode *node1 = q.front(); q.pop();</span><br><span class="line">            TreeNode *node2 = q.front(); q.pop();</span><br><span class="line">            if (!node1 &amp;&amp; !node2) continue;</span><br><span class="line">            if((node1 &amp;&amp; !node2) || (!node1 &amp;&amp; node2)) return false;</span><br><span class="line">            if (node1-&gt;val != node2-&gt;val) return false;</span><br><span class="line">            q.push(node1-&gt;left);</span><br><span class="line">            q.push(node2-&gt;right);</span><br><span class="line">            q.push(node1-&gt;right);</span><br><span class="line">            q.push(node2-&gt;left);</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>Given the below binary tree and sum = 22,</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">      5</span><br><span class="line">     / \</span><br><span class="line">    4   8</span><br><span class="line">   /   / \</span><br><span class="line">  11  13  4</span><br><span class="line"> /  \      \</span><br><span class="line">7    2      1</span><br></pre></td></tr></table></figure>
+<p>return true, as there exist a root-to-leaf path 5-&gt;4-&gt;11-&gt;2 which sum is 22.</p>
+<h4 id="题意："><a href="#题意：" class="headerlink" title="题意："></a>题意：</h4><p>判断是否存在根节点到叶子节点的路径和等于给定sum值</p>
+<h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>用深度优先算法DFS的思想来遍历每一条完整的路径，也就是利用递归不停找子节点的左右子节点</p>
+<h4 id="C-代码："><a href="#C-代码：" class="headerlink" title="C++代码："></a>C++代码：</h4><h4 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool hasPathSum(TreeNode* root, int sum) &#123;</span><br><span class="line">        if (!root) return false;</span><br><span class="line">        if (!root-&gt;left &amp;&amp; !root-&gt;right &amp;&amp; root-&gt;val == sum ) return true;</span><br><span class="line">        return hasPathSum(root-&gt;left, sum - root-&gt;val) || hasPathSum(root-&gt;right, sum - root-&gt;val);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>时间复杂度：O(n)</p>
 <p>空间复杂度：O(n)</p>
 
@@ -248,7 +245,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/26/lc112/" data-tooltip="112. Path Sum" aria-label="上一篇: 112. Path Sum">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/10/21/淘宝选择规格动画效果/" data-tooltip="淘宝选择规格动画效果" aria-label="上一篇: 淘宝选择规格动画效果">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -257,7 +254,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/24/lc104/" data-tooltip="104. Maximum Depth of Binary Tree" aria-label="下一篇: 104. Maximum Depth of Binary Tree">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/25/lc101/" data-tooltip="101. Symmetric Tree" aria-label="下一篇: 101. Symmetric Tree">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -320,7 +317,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/26/lc112/" data-tooltip="112. Path Sum" aria-label="上一篇: 112. Path Sum">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/10/21/淘宝选择规格动画效果/" data-tooltip="淘宝选择规格动画效果" aria-label="上一篇: 淘宝选择规格动画效果">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -329,7 +326,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/24/lc104/" data-tooltip="104. Maximum Depth of Binary Tree" aria-label="下一篇: 104. Maximum Depth of Binary Tree">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/25/lc101/" data-tooltip="101. Symmetric Tree" aria-label="下一篇: 101. Symmetric Tree">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -422,9 +419,9 @@
     
         <script>
              var disqus_config = function () {
-                 this.page.url = 'http://salmons.info/2016/03/25/lc101/';
+                 this.page.url = 'http://salmons.info/2016/03/26/lc112/';
                  
-                    this.page.identifier = '2016/03/25/lc101/';
+                    this.page.identifier = '2016/03/26/lc112/';
                  
              };
             (function() {
